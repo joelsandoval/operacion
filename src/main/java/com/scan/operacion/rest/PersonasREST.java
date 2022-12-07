@@ -51,6 +51,7 @@ class PersonasREST {
         return repoMorales.damePersonasPorTipo(tipo);
     }
 
+    
 //    @GetMapping(value = "/proyectos/activos")
 //    public List<Proyectos> dameProyecto(@PathVariable("clave") String clave) {
 //        return repoProyectos.dameProyectosActivos();

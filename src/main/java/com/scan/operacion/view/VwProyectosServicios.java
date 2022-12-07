@@ -48,6 +48,10 @@ public class VwProyectosServicios implements Serializable {
     private String estatus;
     @Column(name = "clase")
     private String clase;
+    @Column(name = "servicio_corto")
+    private String servicioCorto;
+    @Column(name = "referencia")
+    private String referencia;
 
     public VwProyectosServicios() {
     }
@@ -146,6 +150,22 @@ public class VwProyectosServicios implements Serializable {
 
     public void setClase(String clase) {
         this.clase = clase;
+    }
+
+    public String getServicioCorto() {
+        return servicioCorto;
+    }
+
+    public void setServicioCorto(String servicioCorto) {
+        this.servicioCorto = servicioCorto;
+    }
+
+    public String getReferencia() {
+        return referencia;
+    }
+
+    public void setReferencia(String referencia) {
+        this.referencia = referencia;
     }
 
 }

@@ -132,6 +132,11 @@ class ProyectosREST {
     }
     
     
+    @GetMapping(value = "/actividades/{servicio}")
+    public List<VwProyectosServiciosActividades> dameProyectoServicioActividades(@PathVariable("servicio") Integer servicio) {
+        return repoVwActividades.dameActividades(servicio);
+    }
+    
     @GetMapping(value = "/actividad/{actividad}")
     public Optional<VwProyectosServiciosActividades> dameProyectoServicioActividad(@PathVariable("actividad") Integer actividad) {
         return repoVwActividades.findById(actividad);

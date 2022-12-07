@@ -35,6 +35,8 @@ public class CatServicios implements Serializable {
     private String servicio;
     @Column(name = "categoria")
     private Integer categoria;
+    @Column(name = "servicio_corto")
+    private String servicioCorto;
 
     public CatServicios() {
     }
@@ -65,6 +67,14 @@ public class CatServicios implements Serializable {
 
     public void setCategoria(Integer categoria) {
         this.categoria = categoria;
+    }
+
+    public String getServicioCorto() {
+        return servicioCorto;
+    }
+
+    public void setServicioCorto(String servicioCorto) {
+        this.servicioCorto = servicioCorto;
     }
 
     @Override
