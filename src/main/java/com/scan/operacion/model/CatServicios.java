@@ -20,7 +20,7 @@ import javax.persistence.Table;
  * @author Joel
  */
 @Entity
-@Table(name = "cat_servicios")
+@Table(name = "cat_servicios", schema = "operacion")
 @NamedQueries({
     @NamedQuery(name = "CatServicios.findAll", query = "SELECT c FROM CatServicios c")})
 public class CatServicios implements Serializable {

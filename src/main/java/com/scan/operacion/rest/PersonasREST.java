@@ -2,9 +2,11 @@ package com.scan.operacion.rest;
 
 import com.scan.operacion.dao.CatPersonasMoralesRepository;
 import com.scan.operacion.dao.ProyectosRepository;
+import com.scan.operacion.dao.VwFisicasUsuariosRepository;
 import com.scan.operacion.dao.VwProyectosRepository;
 import com.scan.operacion.model.CatPersonasMorales;
 import com.scan.operacion.model.Proyectos;
+import com.scan.operacion.view.VwFisicasUsuarios;
 import com.scan.operacion.view.VwProyectos;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +31,8 @@ class PersonasREST {
 
     @Autowired
     private CatPersonasMoralesRepository repoMorales;
+    @Autowired
+    private VwFisicasUsuariosRepository repoFisicasF;
 
     /**
      * Guarda la resolución de un trámite, Inserta un registro en la tabla
@@ -45,15 +49,13 @@ class PersonasREST {
 //        serviceT.guardaResolucion(bita);
 //        LOGGER.info("Se creó la resolucion: " + bita.getBireBitacora());
 //    }
-
     @GetMapping(value = "/morales/tipo/{tipo}")
     public List<CatPersonasMorales> dameProyecto(@PathVariable("tipo") Integer tipo) {
         return repoMorales.damePersonasPorTipo(tipo);
     }
 
-    
-//    @GetMapping(value = "/proyectos/activos")
-//    public List<Proyectos> dameProyecto(@PathVariable("clave") String clave) {
-//        return repoProyectos.dameProyectosActivos();
-//    }
+    @GetMapping(value = "/fisicas/moral/{moral}")
+    public List<VwFisicasUsuarios> dameFisicasPorMoral(@PathVariable("moral") Integer moral) {
+        return repoFisicasF.dameUsuarios(moral);
+    }
 }

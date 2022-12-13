@@ -1,10 +1,12 @@
 package com.scan.operacion.rest;
 
 import com.scan.operacion.dao.CatPersonasMoralesRepository;
+import com.scan.operacion.dao.CatServiciosCategoriaRepository;
 import com.scan.operacion.dao.CatServiciosRepository;
 import com.scan.operacion.dao.ProyectosRepository;
 import com.scan.operacion.dao.VwProyectosRepository;
 import com.scan.operacion.model.CatPersonasMorales;
+import com.scan.operacion.model.CatServiciosCategoria;
 import com.scan.operacion.model.Proyectos;
 import com.scan.operacion.model.generic.Par;
 import com.scan.operacion.view.VwProyectos;
@@ -31,6 +33,9 @@ class CatalogosREST {
 
     @Autowired
     private CatServiciosRepository repoCatalogos;
+    
+    @Autowired
+    private CatServiciosCategoriaRepository repoServiciosCatego;
 
     /**
      * Guarda la resolución de un trámite, Inserta un registro en la tabla
@@ -51,6 +56,11 @@ class CatalogosREST {
     @GetMapping(value = "/sectores")
     public List<Par> dameSectores() {
         return repoCatalogos.dameSectores();
+    }
+    
+    @GetMapping(value = "/servicios/categorias")
+    public List<CatServiciosCategoria> dameCategoriasServicios() {
+        return repoServiciosCatego.dameCategorias();
     }
 
 //    @GetMapping(value = "/proyectos/activos")

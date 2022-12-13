@@ -5,14 +5,14 @@
 package com.scan.operacion.model;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -20,9 +20,7 @@ import javax.persistence.Table;
  * @author Joel
  */
 @Entity
-@Table(name = "cat_servicios_categoria")
-@NamedQueries({
-    @NamedQuery(name = "CatServiciosCategoria.findAll", query = "SELECT c FROM CatServiciosCategoria c")})
+@Table(name = "cat_servicios_categoria", schema = "operacion")
 public class CatServiciosCategoria implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -33,6 +31,8 @@ public class CatServiciosCategoria implements Serializable {
     private Integer id;
     @Column(name = "categoria")
     private String categoria;
+    @OneToMany(mappedBy= "categoria")
+    private List<CatServicios> servicios;
 
     public CatServiciosCategoria() {
     }
@@ -55,6 +55,14 @@ public class CatServiciosCategoria implements Serializable {
 
     public void setCategoria(String categoria) {
         this.categoria = categoria;
+    }
+
+    public List<CatServicios> getServicios() {
+        return servicios;
+    }
+
+    public void setServicios(List<CatServicios> servicios) {
+        this.servicios = servicios;
     }
 
     @Override
