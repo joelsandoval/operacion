@@ -4,18 +4,18 @@ import com.scan.operacion.dao.ProyectosFlujoRepository;
 import com.scan.operacion.dao.ProyectosRepository;
 import com.scan.operacion.dao.ProyectosServiciosActividadesRepository;
 import com.scan.operacion.dao.ProyectosServiciosRepository;
-import com.scan.operacion.dao.VwProyectosFlujoRepository;
-import com.scan.operacion.dao.VwProyectosRepository;
-import com.scan.operacion.dao.VwProyectosServiciosActividadesRepository;
-import com.scan.operacion.dao.VwProyectosServiciosRepository;
+import com.scan.operacion.dao.view.VwProyectosFlujoRepository;
+import com.scan.operacion.dao.view.VwProyectosRepository;
+import com.scan.operacion.dao.view.VwProyectosServiciosActividadesRepository;
+import com.scan.operacion.dao.view.VwProyectosServiciosRepository;
 import com.scan.operacion.model.Proyectos;
 import com.scan.operacion.model.ProyectosFlujo;
 import com.scan.operacion.model.ProyectosServicios;
 import com.scan.operacion.model.ProyectosServiciosActividades;
-import com.scan.operacion.view.VwProyectos;
-import com.scan.operacion.view.VwProyectosFlujo;
-import com.scan.operacion.view.VwProyectosServicios;
-import com.scan.operacion.view.VwProyectosServiciosActividades;
+import com.scan.operacion.model.view.VwProyectos;
+import com.scan.operacion.model.view.VwProyectosFlujo;
+import com.scan.operacion.model.view.VwProyectosServicios;
+import com.scan.operacion.model.view.VwProyectosServiciosActividades;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,12 +102,12 @@ class ProyectosREST {
         return repoVwProyectos.findById(proyecto);
     }
     
-    @PostMapping(value = "/servicios")
+    @PostMapping(value = "/servicio")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public Optional<VwProyectosServicios> saveServicio(@RequestBody ProyectosServicios servicio) {
         ProyectosServicios nuevo = repoServicios.save(servicio);
-        LOGGER.info("Se creó el proyecto: {}", nuevo.getProyecto());
+        LOGGER.info("Se creó el servicio: {}", nuevo.getId());
         return repoVwServicios.findById(nuevo.getId());
     }
     
@@ -142,6 +142,10 @@ class ProyectosREST {
         return repoVwActividades.findById(actividad);
     }
     
+    @GetMapping(value = "/actividad/borra/{actividad}")
+    public void delProyectoServicioActividad(@PathVariable("actividad") Integer actividad) {
+        repoActividades.deleteById(actividad);
+    }
     
     @PostMapping(value = "/flujo")
     @ResponseStatus(HttpStatus.CREATED)

@@ -2,18 +2,17 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.scan.operacion.model;
+package com.scan.operacion.model.view;
 
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 /**
@@ -21,25 +20,29 @@ import javax.persistence.Table;
  * @author Joel
  */
 @Entity
-@Table(name = "cat_servicios_categoria", schema = "operacion")
-public class CatServiciosCategoria implements Serializable {
+@Table(name = "vw_expediente_servicio_cat", schema = "operacion")
+public class VwExpedienteServicioCat implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
     @Column(name = "categoria")
     private String categoria;
-    @OneToMany(mappedBy= "categoria")
-    @OrderBy("servicio")
-    private List<CatServicios> servicios;
+    @Column(name = "servicio")
+    private Integer servicio;
+    @OneToMany
+    @JoinColumns({
+        @JoinColumn(updatable = false, insertable = false, name = "tipo", referencedColumnName = "id"),
+        @JoinColumn(updatable = false, insertable = false, name = "servicio", referencedColumnName = "servicio")
+    })
+    private List<VwExpedienteServicio> documentos;
 
-    public CatServiciosCategoria() {
+    public VwExpedienteServicioCat() {
     }
 
-    public CatServiciosCategoria(Integer id) {
+    public VwExpedienteServicioCat(Integer id) {
         this.id = id;
     }
 
@@ -59,12 +62,20 @@ public class CatServiciosCategoria implements Serializable {
         this.categoria = categoria;
     }
 
-    public List<CatServicios> getServicios() {
-        return servicios;
+    public Integer getServicio() {
+        return servicio;
     }
 
-    public void setServicios(List<CatServicios> servicios) {
-        this.servicios = servicios;
+    public void setServicio(Integer servicio) {
+        this.servicio = servicio;
+    }
+
+    public List<VwExpedienteServicio> getDocumentos() {
+        return documentos;
+    }
+
+    public void setDocumentos(List<VwExpedienteServicio> documentos) {
+        this.documentos = documentos;
     }
 
     @Override
@@ -77,10 +88,10 @@ public class CatServiciosCategoria implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CatServiciosCategoria)) {
+        if (!(object instanceof VwExpedienteServicioCat)) {
             return false;
         }
-        CatServiciosCategoria other = (CatServiciosCategoria) object;
+        VwExpedienteServicioCat other = (VwExpedienteServicioCat) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -89,7 +100,7 @@ public class CatServiciosCategoria implements Serializable {
 
     @Override
     public String toString() {
-        return "com.scan.operacion.model.CatServiciosCategoria[ id=" + id + " ]";
+        return "com.scan.operacion.model.CatActividadesTipo[ id=" + id + " ]";
     }
-    
+
 }

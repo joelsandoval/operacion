@@ -1,6 +1,6 @@
-package com.scan.operacion.dao;
+package com.scan.operacion.dao.view;
 
-import com.scan.operacion.view.VwProyectosServiciosActividades;
+import com.scan.operacion.model.view.VwProyectosServiciosActividades;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.Query;

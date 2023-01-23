@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.scan.operacion.view;
+package com.scan.operacion.model.view;
 
 import java.io.Serializable;
 import javax.persistence.Column;
@@ -40,6 +40,8 @@ public class VwFisicasUsuarios implements Serializable {
     private String usuario;
     @Column(name = "password")
     private String password;
+    @Column(name = "alias")
+    private String alias;
 
     public VwFisicasUsuarios() {
     }
@@ -122,6 +124,14 @@ public class VwFisicasUsuarios implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
     
 }

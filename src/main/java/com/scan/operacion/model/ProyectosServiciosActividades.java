@@ -12,8 +12,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -35,7 +33,9 @@ public class ProyectosServiciosActividades implements Serializable {
     @Column(name = "servicio")
     private Integer servicio;
     @Column(name = "actividad")
-    private String actividad;
+    private Integer actividad;
+    @Column(name = "descripcion")
+    private String descripcion;
     @Column(name = "tipo")
     private Integer tipo;
     @Column(name = "fecha")
@@ -43,6 +43,10 @@ public class ProyectosServiciosActividades implements Serializable {
     private Date fecha;
     @Column(name = "estatus")
     private Integer estatus;
+    @Column(name = "responsable")
+    private Integer responsable;
+    @Column(name = "observaciones")
+    private String observaciones;
 
     public ProyectosServiciosActividades() {
     }
@@ -66,15 +70,7 @@ public class ProyectosServiciosActividades implements Serializable {
     public void setServicio(Integer servicio) {
         this.servicio = servicio;
     }
-
-    public String getActividad() {
-        return actividad;
-    }
-
-    public void setActividad(String actividad) {
-        this.actividad = actividad;
-    }
-
+    
     public Integer getTipo() {
         return tipo;
     }
@@ -97,6 +93,38 @@ public class ProyectosServiciosActividades implements Serializable {
 
     public void setEstatus(Integer estatus) {
         this.estatus = estatus;
+    }
+
+    public String getObservaciones() {
+        return observaciones;
+    }
+
+    public void setObservaciones(String observaciones) {
+        this.observaciones = observaciones;
+    }
+
+    public Integer getActividad() {
+        return actividad;
+    }
+
+    public void setActividad(Integer actividad) {
+        this.actividad = actividad;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public Integer getResponsable() {
+        return responsable;
+    }
+
+    public void setResponsable(Integer responsable) {
+        this.responsable = responsable;
     }
 
     @Override

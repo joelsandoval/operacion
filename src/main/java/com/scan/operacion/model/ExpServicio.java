@@ -5,15 +5,12 @@
 package com.scan.operacion.model;
 
 import java.io.Serializable;
-import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 /**
@@ -21,8 +18,8 @@ import javax.persistence.Table;
  * @author Joel
  */
 @Entity
-@Table(name = "cat_servicios_categoria", schema = "operacion")
-public class CatServiciosCategoria implements Serializable {
+@Table(name = "exp_servicio", schema = "operacion")
+public class ExpServicio implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -30,16 +27,21 @@ public class CatServiciosCategoria implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-    @Column(name = "categoria")
-    private String categoria;
-    @OneToMany(mappedBy= "categoria")
-    @OrderBy("servicio")
-    private List<CatServicios> servicios;
+    @Column(name = "servicio")
+    private Integer servicio;
+    @Column(name = "documento")
+    private Integer documento;
+    @Column(name = "cumple")
+    private Boolean cumple;
+    @Column(name = "comentarios")
+    private String comentarios;
+    @Column(name = "presenta")
+    private Boolean presenta;
 
-    public CatServiciosCategoria() {
+    public ExpServicio() {
     }
 
-    public CatServiciosCategoria(Integer id) {
+    public ExpServicio(Integer id) {
         this.id = id;
     }
 
@@ -51,21 +53,47 @@ public class CatServiciosCategoria implements Serializable {
         this.id = id;
     }
 
-    public String getCategoria() {
-        return categoria;
+    public Boolean getCumple() {
+        return cumple;
     }
 
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
+    public void setCumple(Boolean cumple) {
+        this.cumple = cumple;
     }
 
-    public List<CatServicios> getServicios() {
-        return servicios;
+    public String getComentarios() {
+        return comentarios;
     }
 
-    public void setServicios(List<CatServicios> servicios) {
-        this.servicios = servicios;
+    public void setComentarios(String comentarios) {
+        this.comentarios = comentarios;
     }
+
+    public Boolean getPresenta() {
+        return presenta;
+    }
+
+    public void setPresenta(Boolean presenta) {
+        this.presenta = presenta;
+    }
+
+    public Integer getServicio() {
+        return servicio;
+    }
+
+    public void setServicio(Integer servicio) {
+        this.servicio = servicio;
+    }
+
+    public Integer getDocumento() {
+        return documento;
+    }
+
+    public void setDocumento(Integer documento) {
+        this.documento = documento;
+    }
+
+    
 
     @Override
     public int hashCode() {
@@ -77,10 +105,10 @@ public class CatServiciosCategoria implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CatServiciosCategoria)) {
+        if (!(object instanceof ExpServicio)) {
             return false;
         }
-        CatServiciosCategoria other = (CatServiciosCategoria) object;
+        ExpServicio other = (ExpServicio) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -89,7 +117,7 @@ public class CatServiciosCategoria implements Serializable {
 
     @Override
     public String toString() {
-        return "com.scan.operacion.model.CatServiciosCategoria[ id=" + id + " ]";
+        return "com.semarnat.ws.model.dgira.ExpTramite[ id=" + id + " ]";
     }
     
 }

@@ -5,15 +5,14 @@
 package com.scan.operacion.model;
 
 import java.io.Serializable;
-import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 /**
@@ -21,8 +20,8 @@ import javax.persistence.Table;
  * @author Joel
  */
 @Entity
-@Table(name = "cat_servicios_categoria", schema = "operacion")
-public class CatServiciosCategoria implements Serializable {
+@Table(name = "cat_actividades", schema="operacion")
+public class CatActividades implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -30,16 +29,17 @@ public class CatServiciosCategoria implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-    @Column(name = "categoria")
-    private String categoria;
-    @OneToMany(mappedBy= "categoria")
-    @OrderBy("servicio")
-    private List<CatServicios> servicios;
+    @Column(name = "actividad")
+    private String actividad;
+    @Column(name = "tipo")
+    private Integer tipo;
+    @Column(name = "proceso")
+    private Integer proceso;
 
-    public CatServiciosCategoria() {
+    public CatActividades() {
     }
 
-    public CatServiciosCategoria(Integer id) {
+    public CatActividades(Integer id) {
         this.id = id;
     }
 
@@ -51,20 +51,28 @@ public class CatServiciosCategoria implements Serializable {
         this.id = id;
     }
 
-    public String getCategoria() {
-        return categoria;
+    public String getActividad() {
+        return actividad;
     }
 
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
+    public void setActividad(String actividad) {
+        this.actividad = actividad;
     }
 
-    public List<CatServicios> getServicios() {
-        return servicios;
+    public Integer getTipo() {
+        return tipo;
     }
 
-    public void setServicios(List<CatServicios> servicios) {
-        this.servicios = servicios;
+    public void setTipo(Integer tipo) {
+        this.tipo = tipo;
+    }
+
+    public Integer getProceso() {
+        return proceso;
+    }
+
+    public void setProceso(Integer proceso) {
+        this.proceso = proceso;
     }
 
     @Override
@@ -77,10 +85,10 @@ public class CatServiciosCategoria implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CatServiciosCategoria)) {
+        if (!(object instanceof CatActividades)) {
             return false;
         }
-        CatServiciosCategoria other = (CatServiciosCategoria) object;
+        CatActividades other = (CatActividades) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -89,7 +97,7 @@ public class CatServiciosCategoria implements Serializable {
 
     @Override
     public String toString() {
-        return "com.scan.operacion.model.CatServiciosCategoria[ id=" + id + " ]";
+        return "com.scan.operacion.model.CatActividades[ id=" + id + " ]";
     }
     
 }

@@ -24,8 +24,6 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "proyectos_servicios", schema = "operacion")
-@NamedQueries({
-    @NamedQuery(name = "ProyectosServicios.findAll", query = "SELECT p FROM ProyectosServicios p")})
 public class ProyectosServicios implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -49,6 +47,8 @@ public class ProyectosServicios implements Serializable {
     private int responsable;
     @Column(name = "institucion")
     private int institucion;
+    @Column(name = "referencia")
+    private String referencia;
     
     
     public ProyectosServicios() {
@@ -119,6 +119,16 @@ public class ProyectosServicios implements Serializable {
     public void setInstitucion(int institucion) {
         this.institucion = institucion;
     }
+
+    public String getReferencia() {
+        return referencia;
+    }
+
+    public void setReferencia(String referencia) {
+        this.referencia = referencia;
+    }
+    
+    
 
     @Override
     public int hashCode() {

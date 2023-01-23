@@ -1,13 +1,9 @@
 package com.scan.operacion.rest;
 
 import com.scan.operacion.dao.CatPersonasMoralesRepository;
-import com.scan.operacion.dao.ProyectosRepository;
-import com.scan.operacion.dao.VwFisicasUsuariosRepository;
-import com.scan.operacion.dao.VwProyectosRepository;
+import com.scan.operacion.dao.view.VwFisicasUsuariosRepository;
 import com.scan.operacion.model.CatPersonasMorales;
-import com.scan.operacion.model.Proyectos;
-import com.scan.operacion.view.VwFisicasUsuarios;
-import com.scan.operacion.view.VwProyectos;
+import com.scan.operacion.model.view.VwFisicasUsuarios;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

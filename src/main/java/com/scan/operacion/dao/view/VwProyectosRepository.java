@@ -1,6 +1,6 @@
-package com.scan.operacion.dao;
+package com.scan.operacion.dao.view;
 
-import com.scan.operacion.view.VwProyectos;
+import com.scan.operacion.model.view.VwProyectos;
 import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
