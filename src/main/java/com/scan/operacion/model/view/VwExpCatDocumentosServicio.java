@@ -8,8 +8,6 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 /**
@@ -34,6 +32,8 @@ public class VwExpCatDocumentosServicio implements Serializable {
     private String descripcion;
     @Column(name = "servicio")
     private Integer servicio;
+    @Column(name = "documento_id")
+    private Integer documentoId;
 
     public VwExpCatDocumentosServicio() {
     }
@@ -84,6 +84,14 @@ public class VwExpCatDocumentosServicio implements Serializable {
 
     public void setServicio(Integer servicio) {
         this.servicio = servicio;
+    }
+
+    public Integer getDocumentoId() {
+        return documentoId;
+    }
+
+    public void setDocumentoId(Integer documentoId) {
+        this.documentoId = documentoId;
     }
     
 }
