@@ -5,6 +5,7 @@ import com.scan.operacion.dao.ExpCatDocumentosRepository;
 import com.scan.operacion.dao.ExpCatDocumentosServiciosRepository;
 import com.scan.operacion.dao.ExpServicioArchivosRepository;
 import com.scan.operacion.dao.ExpServicioRepository;
+import com.scan.operacion.dao.view.VwExpCatDocumentosServicioRepository;
 import com.scan.operacion.dao.view.VwExpedienteServicioCatRepository;
 import com.scan.operacion.dao.view.VwExpedienteServicioRepository;
 import com.scan.operacion.model.ExpCatDocumentos;
@@ -12,6 +13,7 @@ import com.scan.operacion.model.ExpCatDocumentosCatego;
 import com.scan.operacion.model.ExpCatDocumentosServicios;
 import com.scan.operacion.model.ExpServicio;
 import com.scan.operacion.model.ExpServicioArchivos;
+import com.scan.operacion.model.view.VwExpCatDocumentosServicio;
 import com.scan.operacion.model.view.VwExpedienteServicio;
 import com.scan.operacion.model.view.VwExpedienteServicioCat;
 import java.util.ArrayList;
@@ -59,6 +61,9 @@ class ExpedienteREST {
 
     @Autowired
     private ExpCatDocumentosCategoRepository repoCategoDocs;
+
+    @Autowired
+    private VwExpCatDocumentosServicioRepository repoVwCatDocsServ;
 
     @GetMapping(value = "tramite/{tramite},{tipo}")
     @ResponseBody
@@ -148,7 +153,30 @@ class ExpedienteREST {
     @PostMapping(value = "/documentos/servicios/guarda")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public ExpCatDocumentosServicios saveExpDocumntosServicios(@RequestBody ExpCatDocumentosServicios resource) {
-        return repoCatDocsServ.save(resource);
+    public VwExpCatDocumentosServicio saveExpDocumntosServicios(@RequestBody ExpCatDocumentosServicios resource) {
+        VwExpCatDocumentosServicio result = new VwExpCatDocumentosServicio();
+        ExpCatDocumentosServicios nuevo = repoCatDocsServ.save(resource);
+        result = repoVwCatDocsServ.findById(nuevo.getId()).get();
+        return result;
     }
+    
+    @PostMapping(value = "/documentos/catego/guarda")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
+    public ExpCatDocumentosCatego saveExpCatDocumentosCatego(@RequestBody ExpCatDocumentosCatego resource) {
+        
+        return repoCategoDocs.save(resource);
+    }
+    
+    @GetMapping(value = "/documentos/catego/delete/{doc}")
+    public void delServicioDocs(@PathVariable("doc") Integer doc) {
+        
+        repoCategoDocs.deleteById(doc);
+    }
+    
+    @GetMapping(value = "/documentos/delete/{doc}")
+    public void delExpDocumentos(@PathVariable("doc") Integer doc) {
+        repoCatDocs.deleteById(doc);
+    }
+    
 }

@@ -1,9 +1,12 @@
 package com.scan.operacion.rest;
 
+import com.scan.operacion.dao.CatActividadesRepository;
 import com.scan.operacion.dao.CatActividadesTipoRepository;
 import com.scan.operacion.dao.CatServiciosCategoriaRepository;
 import com.scan.operacion.dao.CatServiciosRepository;
+import com.scan.operacion.dao.ExpCatDocumentosServiciosRepository;
 import com.scan.operacion.dao.view.VwExpCatDocumentosServicioRepository;
+import com.scan.operacion.model.CatActividades;
 import com.scan.operacion.model.CatActividadesTipo;
 import com.scan.operacion.model.CatServicios;
 import com.scan.operacion.model.CatServiciosCategoria;
@@ -42,10 +45,16 @@ class CatalogosREST {
     private CatServiciosCategoriaRepository repoServiciosCatego;
     
     @Autowired
+    private CatActividadesRepository repoActiv;
+    
+    @Autowired
     private CatActividadesTipoRepository repoAcTipo;
     
     @Autowired
-    private VwExpCatDocumentosServicioRepository repoDocsServ;
+    private VwExpCatDocumentosServicioRepository repoVwDocsServ;
+    
+    @Autowired
+    private ExpCatDocumentosServiciosRepository repoDocsServ;
 
     /**
      * Guarda una categoría en el catálogo
@@ -104,6 +113,11 @@ class CatalogosREST {
         repoCatalogos.deleteById(servicio);
     }
     
+    @GetMapping(value = "/servicio/documentos/delete/{doc}")
+    public void delServicioDocs(@PathVariable("doc") Integer doc) {
+        repoDocsServ.deleteById(doc);
+    }
+    
     @GetMapping(value = "/servicios/categorias")
     public List<CatServiciosCategoria> dameCategoriasServicios() {
         return repoServiciosCatego.dameCategorias();
@@ -116,6 +130,53 @@ class CatalogosREST {
     
     @GetMapping(value = "/servicio/documentos/{servicio}")
     public List<VwExpCatDocumentosServicio> dameDocumentosServicio(@PathVariable("servicio") Integer servicio) {
-        return repoDocsServ.damePorServicio(servicio);
+        return repoVwDocsServ.damePorServicio(servicio);
     }
+    
+    /**
+     * Guarda un servicio en el catálogo
+     *
+     * @param servicio se recibe un objeto CatServicios
+     * {@link BitacoraResolucionDTO} @RequestBody
+     * @return
+     */
+    @PostMapping(value = "actividad")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
+    public CatActividades createServicio(@RequestBody CatActividades actividad) {
+        CatActividades result = new CatActividades();
+        try {
+        result = repoActiv.save(actividad);
+        LOGGER.info("Se actualizó {}", actividad.getActividad());
+        } catch (Exception e) {
+            LOGGER.error("No se actualizó el servicio {} {}", actividad.getActividad(), e.getMessage());
+        } 
+        return result;
+    }
+    
+    @PostMapping(value = "actividad/tipo")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
+    public CatActividadesTipo createServicio(@RequestBody CatActividadesTipo actividad) {
+        CatActividadesTipo result = new CatActividadesTipo();
+        try {
+        result = repoAcTipo.save(actividad);
+        LOGGER.info("Se actualizó {}", actividad.getActividadTipo());
+        } catch (Exception e) {
+            LOGGER.error("No se actualizó el servicio {} {}", actividad.getActividadTipo(), e.getMessage());
+        } 
+        return result;
+    }
+    
+    @GetMapping(value = "/actividad/delete/{act}")
+    public void delActividad(@PathVariable("act") Integer act) {
+        repoActiv.deleteById(act);
+    }
+    
+    @GetMapping(value = "/actividad/tipo/delete/{act}")
+    public void delActividadTipo(@PathVariable("act") Integer act) {
+        repoAcTipo.deleteById(act);
+    }
+    
+    
 }
