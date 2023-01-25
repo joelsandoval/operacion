@@ -1,14 +1,15 @@
 package com.scan.operacion.rest;
 
-
 import com.scan.operacion.dao.ExpCatDocumentosCategoRepository;
 import com.scan.operacion.dao.ExpCatDocumentosRepository;
+import com.scan.operacion.dao.ExpCatDocumentosServiciosRepository;
 import com.scan.operacion.dao.ExpServicioArchivosRepository;
 import com.scan.operacion.dao.ExpServicioRepository;
 import com.scan.operacion.dao.view.VwExpedienteServicioCatRepository;
 import com.scan.operacion.dao.view.VwExpedienteServicioRepository;
 import com.scan.operacion.model.ExpCatDocumentos;
 import com.scan.operacion.model.ExpCatDocumentosCatego;
+import com.scan.operacion.model.ExpCatDocumentosServicios;
 import com.scan.operacion.model.ExpServicio;
 import com.scan.operacion.model.ExpServicioArchivos;
 import com.scan.operacion.model.view.VwExpedienteServicio;
@@ -35,34 +36,36 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @RestController
 @RequestMapping(value = "expediente")
 class ExpedienteREST {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ExpedienteREST.class);
-    
+
     @Autowired
     private VwExpedienteServicioRepository repository;
-    
+
     @Autowired
     private VwExpedienteServicioCatRepository repoCat;
-    
+
     @Autowired
     private ExpServicioRepository repositoryE;
-    
+
     @Autowired
     private ExpServicioArchivosRepository repositoryEA;
-    
+
     @Autowired
     private ExpCatDocumentosRepository repoCatDocs;
-    
+
+    @Autowired
+    private ExpCatDocumentosServiciosRepository repoCatDocsServ;
+
     @Autowired
     private ExpCatDocumentosCategoRepository repoCategoDocs;
 
-    
     @GetMapping(value = "tramite/{tramite},{tipo}")
     @ResponseBody
     public List<VwExpedienteServicio> damePorTramiteTipo(@PathVariable("tramite") Integer tramite, @PathVariable("tipo") Integer tipo) {
         return repository.damePorTramiteTipo(tramite, tipo);
     }
-    
+
     @PostMapping(value = "/guarda")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
@@ -78,13 +81,13 @@ class ExpedienteREST {
         }
         return result;
     }
-    
+
     @GetMapping(value = "catalogo/tipo/{tipo},{persona},{servicio}")
     @ResponseBody
     public List<ExpCatDocumentos> dameCatalogoDocs(@PathVariable("tipo") Integer tipo, @PathVariable("persona") Integer persona, @PathVariable("servicio") Integer servicio) {
         return repoCatDocs.damePorTipoPersonaNoServicio(tipo, persona, servicio);
     }
-    
+
     @PostMapping(value = "/catalogo/guarda")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
@@ -104,7 +107,7 @@ class ExpedienteREST {
     public List<VwExpedienteServicio> damePorServicio(@PathVariable("servicio") Integer servicio) {
         return repository.damePorServicio(servicio);
     }
-    
+
     @GetMapping(value = "/crea/{servicio},{estudio},{usuario}")
     @ResponseBody
     public List<VwExpedienteServicioCat> ingresados(@PathVariable("servicio") Integer servicio, @PathVariable("estudio") Integer estudio,
@@ -129,16 +132,23 @@ class ExpedienteREST {
         }
         return result;
     }
-    
+
     @GetMapping(value = "/cat/servicio/{servicio}")
     @ResponseBody
     public List<VwExpedienteServicioCat> dameCatPorServicio(@PathVariable("servicio") Integer servicio) {
         return repoCat.findByServicioOrderById(servicio);
     }
-    
+
     @GetMapping(value = "/cat/categorias")
     @ResponseBody
     public List<ExpCatDocumentosCatego> dameCatPorServicio() {
         return repoCategoDocs.dameTodasCategorias();
+    }
+
+    @PostMapping(value = "/documentos/servicios/guarda")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
+    public ExpCatDocumentosServicios saveExpDocumntosServicios(@RequestBody ExpCatDocumentosServicios resource) {
+        return repoCatDocsServ.save(resource);
     }
 }
