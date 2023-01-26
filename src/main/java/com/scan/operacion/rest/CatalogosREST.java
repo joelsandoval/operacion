@@ -5,12 +5,14 @@ import com.scan.operacion.dao.CatActividadesTipoRepository;
 import com.scan.operacion.dao.CatServiciosCategoriaRepository;
 import com.scan.operacion.dao.CatServiciosRepository;
 import com.scan.operacion.dao.ExpCatDocumentosServiciosRepository;
+import com.scan.operacion.dao.view.VwCatActividadesServiciosRepository;
 import com.scan.operacion.dao.view.VwExpCatDocumentosServicioRepository;
 import com.scan.operacion.model.CatActividades;
 import com.scan.operacion.model.CatActividadesTipo;
 import com.scan.operacion.model.CatServicios;
 import com.scan.operacion.model.CatServiciosCategoria;
 import com.scan.operacion.model.generic.Par;
+import com.scan.operacion.model.view.VwCatActividadesServicios;
 import com.scan.operacion.model.view.VwExpCatDocumentosServicio;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,21 +42,24 @@ class CatalogosREST {
 
     @Autowired
     private CatServiciosRepository repoCatalogos;
-    
+
     @Autowired
     private CatServiciosCategoriaRepository repoServiciosCatego;
-    
+
     @Autowired
     private CatActividadesRepository repoActiv;
-    
+
     @Autowired
     private CatActividadesTipoRepository repoAcTipo;
-    
+
     @Autowired
     private VwExpCatDocumentosServicioRepository repoVwDocsServ;
-    
+
     @Autowired
     private ExpCatDocumentosServiciosRepository repoDocsServ;
+
+    @Autowired
+    private VwCatActividadesServiciosRepository repoVwCatActServ;
 
     /**
      * Guarda una categoría en el catálogo
@@ -69,14 +74,14 @@ class CatalogosREST {
     public CatServiciosCategoria createCategoria(@RequestBody CatServiciosCategoria catego) {
         CatServiciosCategoria result = new CatServiciosCategoria();
         try {
-        result = repoServiciosCatego.save(catego);
-        LOGGER.info("Se actualizó {}", catego.getCategoria());
+            result = repoServiciosCatego.save(catego);
+            LOGGER.info("Se actualizó {}", catego.getCategoria());
         } catch (Exception e) {
             LOGGER.error("No se actualizó el servicio {} {}", catego.getCategoria(), e.getMessage());
-        } 
+        }
         return result;
     }
-    
+
     /**
      * Guarda un servicio en el catálogo
      *
@@ -90,11 +95,11 @@ class CatalogosREST {
     public CatServicios createServicio(@RequestBody CatServicios servicio) {
         CatServicios result = new CatServicios();
         try {
-        result = repoCatalogos.save(servicio);
-        LOGGER.info("Se actualizó {}", servicio.getServicio());
+            result = repoCatalogos.save(servicio);
+            LOGGER.info("Se actualizó {}", servicio.getServicio());
         } catch (Exception e) {
             LOGGER.error("No se actualizó el servicio {} {}", servicio.getServicioCorto(), e.getMessage());
-        } 
+        }
         return result;
     }
 
@@ -102,22 +107,22 @@ class CatalogosREST {
     public List<Par> dameSectores() {
         return repoCatalogos.dameSectores();
     }
-    
+
     @GetMapping(value = "/categoria/delete/{catego}")
     public void delCategorias(@PathVariable("catego") Integer catego) {
         repoServiciosCatego.deleteById(catego);
     }
-    
+
     @GetMapping(value = "/servicio/delete/{servicio}")
     public void delServicios(@PathVariable("servicio") Integer servicio) {
         repoCatalogos.deleteById(servicio);
     }
-    
+
     @GetMapping(value = "/servicio/documentos/delete/{doc}")
     public void delServicioDocs(@PathVariable("doc") Integer doc) {
         repoDocsServ.deleteById(doc);
     }
-    
+
     @GetMapping(value = "/servicios/categorias")
     public List<CatServiciosCategoria> dameCategoriasServicios() {
         return repoServiciosCatego.dameCategorias();
@@ -127,12 +132,12 @@ class CatalogosREST {
     public Iterable<CatActividadesTipo> dameProyecto() {
         return repoAcTipo.findAll();
     }
-    
+
     @GetMapping(value = "/servicio/documentos/{servicio}")
     public List<VwExpCatDocumentosServicio> dameDocumentosServicio(@PathVariable("servicio") Integer servicio) {
         return repoVwDocsServ.damePorServicio(servicio);
     }
-    
+
     /**
      * Guarda un servicio en el catálogo
      *
@@ -146,37 +151,41 @@ class CatalogosREST {
     public CatActividades createServicio(@RequestBody CatActividades actividad) {
         CatActividades result = new CatActividades();
         try {
-        result = repoActiv.save(actividad);
-        LOGGER.info("Se actualizó {}", actividad.getActividad());
+            result = repoActiv.save(actividad);
+            LOGGER.info("Se actualizó {}", actividad.getActividad());
         } catch (Exception e) {
             LOGGER.error("No se actualizó el servicio {} {}", actividad.getActividad(), e.getMessage());
-        } 
+        }
         return result;
     }
-    
+
     @PostMapping(value = "actividad/tipo")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public CatActividadesTipo createServicio(@RequestBody CatActividadesTipo actividad) {
         CatActividadesTipo result = new CatActividadesTipo();
         try {
-        result = repoAcTipo.save(actividad);
-        LOGGER.info("Se actualizó {}", actividad.getActividadTipo());
+            result = repoAcTipo.save(actividad);
+            LOGGER.info("Se actualizó {}", actividad.getActividadTipo());
         } catch (Exception e) {
             LOGGER.error("No se actualizó el servicio {} {}", actividad.getActividadTipo(), e.getMessage());
-        } 
+        }
         return result;
     }
-    
+
     @GetMapping(value = "/actividad/delete/{act}")
     public void delActividad(@PathVariable("act") Integer act) {
         repoActiv.deleteById(act);
     }
-    
+
     @GetMapping(value = "/actividad/tipo/delete/{act}")
     public void delActividadTipo(@PathVariable("act") Integer act) {
         repoAcTipo.deleteById(act);
     }
-    
-    
+
+    @GetMapping(value = "/servicio/actividades/{servicio}")
+    public List<VwCatActividadesServicios> dameActividadesServicio(@PathVariable("servicio") Integer servicio) {
+        return repoVwCatActServ.findByServicio(servicio);
+    }
+
 }
