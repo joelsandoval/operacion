@@ -75,7 +75,7 @@ class ProyectosREST {
      * {@link BitacoraResolucionDTO} @RequestBody
      * @return
      */
-    @PostMapping()
+    @PostMapping()  
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public Optional<VwProyectos> save(@RequestBody Proyectos proyecto) {

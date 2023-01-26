@@ -47,6 +47,8 @@ public class ProyectosServiciosActividades implements Serializable {
     private Integer responsable;
     @Column(name = "observaciones")
     private String observaciones;
+    @Column(name = "documento")
+    private Integer documento;
 
     public ProyectosServiciosActividades() {
     }
@@ -125,6 +127,14 @@ public class ProyectosServiciosActividades implements Serializable {
 
     public void setResponsable(Integer responsable) {
         this.responsable = responsable;
+    }
+
+    public Integer getDocumento() {
+        return documento;
+    }
+
+    public void setDocumento(Integer documento) {
+        this.documento = documento;
     }
 
     @Override
