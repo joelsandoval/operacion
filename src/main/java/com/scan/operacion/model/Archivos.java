@@ -25,8 +25,6 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "archivos", schema = "operacion")
-@NamedQueries({
-    @NamedQuery(name = "Archivos.findAll", query = "SELECT a FROM Archivos a")})
 public class Archivos implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -63,6 +61,8 @@ public class Archivos implements Serializable {
     private Integer activo;
     @Column(name = "size")
     private BigInteger size;
+    @Column(name = "host")
+    private Integer host;
 
     public Archivos() {
     }
@@ -182,6 +182,16 @@ public class Archivos implements Serializable {
     public void setSize(BigInteger size) {
         this.size = size;
     }
+
+    public Integer getHost() {
+        return host;
+    }
+
+    public void setHost(Integer host) {
+        this.host = host;
+    }
+    
+    
 
     @Override
     public int hashCode() {

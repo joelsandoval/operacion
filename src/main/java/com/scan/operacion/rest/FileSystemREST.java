@@ -7,6 +7,7 @@ package com.scan.operacion.rest;
 
 
 import com.scan.operacion.model.Archivos;
+import com.scan.operacion.services.FileSFTPService;
 import com.scan.operacion.services.FileSystemService;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -41,6 +42,9 @@ public class FileSystemREST {
     @Autowired
     private FileSystemService serviceFile;
     
+    @Autowired
+    private FileSFTPService serviceSftp;
+    
     
 
     private static final String TIPOCONTENIDO = "application/octet-stream";
@@ -57,12 +61,12 @@ public class FileSystemREST {
         String rutaFs = env.getProperty("file.upload-dir") + cliente.toString() + "/" + proyecto.toString() + "/" + servicio.toString() + "/";
 
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/filesystem/download/servicio/")
-                .path(cliente.toString() + ",")
-                .path(proyecto.toString() + ",")
-                .path(servicio.toString() + ",")
-                .path(fileName)
-                .toUriString();
+                                    .path("/filesystem/download/servicio/")
+                                    .path(cliente.toString() + ",")
+                                    .path(proyecto.toString() + ",")
+                                    .path(servicio.toString() + ",")
+                                    .path(fileName)
+                                    .toUriString();
         Date fecha = new Date();
         Archivos nuevo = new Archivos();
         nuevo.setProyecto(proyecto);
@@ -78,6 +82,7 @@ public class FileSystemREST {
         nuevo.setFechaCarga(fecha);
         nuevo.setActivo(1);
         nuevo.setSize(BigInteger.valueOf(file.getSize()));
+        nuevo.setHost(1);
         return nuevo;
     }
 
@@ -115,5 +120,73 @@ public class FileSystemREST {
             LOGGER.info(archi);
             serviceFile.deleteFile(archi, archivo.getId(), archivo.getTipo());
     }
+    
+    @CrossOrigin
+    @PostMapping("/upload-ftp/servicio/{cliente},{proyecto},{servicio}")
+    public Archivos uploadFtpDocsServicio(@RequestParam("file") MultipartFile file,
+            @PathVariable("cliente") Integer cliente, @PathVariable("proyecto") Integer proyecto,
+            @PathVariable("servicio") Integer servicio) {
+        
+        String fileName = serviceFile.cargaDocumentoFTP(file, cliente, proyecto, servicio);
 
+        String rutaFs = "/proyectos" + cliente.toString() + "/" + proyecto.toString() + "/" + servicio.toString() + "/";
+
+        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/filesystem/download-ftp/servicio/")
+                .path(cliente.toString() + ",")
+                .path(proyecto.toString() + ",")
+                .path(servicio.toString() + ",")
+                .path(fileName)
+                .toUriString();
+        
+        Date fecha = new Date();
+        Archivos nuevo = new Archivos();
+        nuevo.setProyecto(proyecto);
+        nuevo.setArchivo(fileName);
+        nuevo.setEstatus(1);
+        nuevo.setTipo(1);
+        nuevo.setDescripcion(fileName);
+        nuevo.setAutor(1);
+        nuevo.setFecha(fecha);
+        nuevo.setExtension(file.getContentType());
+        nuevo.setRuta(fileDownloadUri);
+        nuevo.setRutaFs(rutaFs);
+        nuevo.setFechaCarga(fecha);
+        nuevo.setActivo(1);
+        nuevo.setSize(BigInteger.valueOf(file.getSize()));
+        nuevo.setHost(2);
+        return nuevo;
+    }
+    
+
+    
+    @GetMapping("/download-ftp/servicio/{cliente},{proyecto},{servicio},{fileName:.+}")
+    public void downloadFtpServicio(@PathVariable Integer cliente, @PathVariable Integer proyecto, 
+            @PathVariable Integer servicio, @PathVariable String fileName, HttpServletRequest request) {
+        // Load file as Resource        
+        // Resource resource = serviceFile.loadFileAsResource(fileName, cliente, proyecto, servicio);
+        
+        // Try to determine file's content type
+//        String contentType = null;
+//        try {
+//            contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+//        } catch (IOException ex) {
+//            LOGGER.info("Could not determine file type: descarga dgira.");
+//        }
+
+        // Fallback to the default content type if type could not be determined
+//        if (contentType == null) {
+//            contentType = TIPOCONTENIDO;
+//        }
+        
+        LOGGER.info("Está descargando un oficio");
+        serviceFile.descargaDocumentoFTP(fileName, cliente, proyecto, servicio);
+//        return ResponseEntity.ok()
+//                .contentType(MediaType.parseMediaType(contentType))
+//                .header(HttpHeaders.CONTENT_DISPOSITION, TIPOATTACHMENT + resource.getFilename() + COMILLAS)
+//                .body(resource);
+    }
+    
+    
+    
 }
