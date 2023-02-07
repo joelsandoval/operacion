@@ -240,7 +240,7 @@ public class FileSystemService {
             String remoteFile = rutaP + fileName;
             LOGGER.info("rutaP: {}", rutaP);
             
-            File downloadFile = new File("/descargas/" + fileName);
+            File downloadFile = new File("C:/descargas/" + fileName);
 
             OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(downloadFile));
             InputStream inputStream = ftpClient.retrieveFileStream(remoteFile);
