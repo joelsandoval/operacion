@@ -80,7 +80,7 @@ class ProyectosREST {
     @ResponseBody
     public Optional<VwProyectos> save(@RequestBody Proyectos proyecto) {
         Proyectos nuevo = repoProyectos.save(proyecto);
-        LOGGER.info("Se creó el proyecto: {}", nuevo.getProyecto());
+        LOGGER.info("Se creó el proyecto: {} {}", nuevo.getProyecto(), nuevo.getId());
         return repoVwProyectos.findById(nuevo.getId());
     }
 
