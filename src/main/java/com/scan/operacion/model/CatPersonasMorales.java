@@ -18,11 +18,13 @@ import javax.persistence.Table;
 /**
  *
  * @author Joel
+ * @Table(name = "cat_personas_morales")
+ * @NamedQueries({
+    @NamedQuery(name = "CatPersonasMorales.findAll", query = "SELECT c FROM CatPersonasMorales c")})
  */
 @Entity
-@Table(name = "cat_personas_morales")
-@NamedQueries({
-    @NamedQuery(name = "CatPersonasMorales.findAll", query = "SELECT c FROM CatPersonasMorales c")})
+@Table(name = "cat_personas_morales", schema = "operacion")
+
 public class CatPersonasMorales implements Serializable {
 
     private static final long serialVersionUID = 1L;

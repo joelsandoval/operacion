@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface VwProyectosRepository extends CrudRepository<VwProyectos, Integer> {
 
-    @Query(value = "select p.* from operacion.vw_proyectos p where p.estatus_id > 0", nativeQuery = true)
+    @Query(value = "select p.* from operacion.vw_proyectos p where p.estatus_id > 0 order by p.id desc", nativeQuery = true)
     public List<VwProyectos> dameProyectosActivos();
     
     
