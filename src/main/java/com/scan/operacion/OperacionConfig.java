@@ -84,7 +84,7 @@ public class OperacionConfig implements WebMvcConfigurer {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(env.getProperty("spring.allowed-origin")));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200", "http://e-scan.ovh"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowCredentials(true);
         configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
