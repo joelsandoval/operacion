@@ -28,7 +28,6 @@ import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-//import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.cors.CorsConfiguration;
@@ -44,10 +43,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * @author Joel
  */
 @Configuration
-//@EnableWebSecurity
 @EnableTransactionManagement
 @EnableJpaRepositories(basePackages = {"com.scan.operacion.dao"}, transactionManagerRef = "transactionManager", entityManagerFactoryRef = "entityManagerFactory")
-@ComponentScan({"com.scan.operacion.dao"})
+@ComponentScan({"com.scan.operacion.dao"}) 
 public class OperacionConfig implements WebMvcConfigurer {
 
     @Autowired
@@ -56,55 +54,8 @@ public class OperacionConfig implements WebMvcConfigurer {
     public OperacionConfig() {
         super();
     }
-
-    /**
-     *
-     * @param http
-     * @throws Exception
-     */
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception {
-//        
-//        http.csrf().disable()
-//            .addFilterAfter(new JWTAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
-//            .authorizeRequests()
-//            .antMatchers(HttpMethod.POST, "/login").permitAll()
-//            .anyRequest().authenticated();
-//
-//    }
-    /**
-     *
-     * @return
-     */
-    @Bean
-    WebServerFactoryCustomizer<ConfigurableServletWebServerFactory> enableDefaultServlet() {
-        return (factory) -> factory.setRegisterDefaultServlet(true);
-    }
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200", "http://e-scan.ovh"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowCredentials(true);
-        configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
-
-    /**
-     *
-     * @return
-     */
-    @Bean
-    public FilterRegistrationBean<CorsFilter> corsFilter() {
-        FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(new CorsFilter(corsConfigurationSource()));
-        bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
-        return bean;
-    }
-
-    /**
+    
+     /**
      *
      * @return
      */
@@ -135,6 +86,73 @@ public class OperacionConfig implements WebMvcConfigurer {
         dataSource.setPassword(env.getProperty("spring.datasource.password"));
         return dataSource;
     }
+    
+    Properties additionalProperties() {
+        Properties properties = new Properties();
+        properties.setProperty("hibernate.hbm2ddl.auto", "none");
+        properties.setProperty("hibernate.show_sql", "false");
+//        properties.setProperty("hibernate.format_sql", "true");
+        properties.setProperty("hibernate.dialect", "org.hibernate.spatial.dialect.postgis.PostgisDialect");
+        return properties;
+    }
+
+    
+//    @Autowired
+//    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+//        KeycloakAuthenticationProvider provider = new KeycloakAuthenticationProvider();
+//        provider.setGrantedAuthoritiesMapper(new SimpleAuthorityMapper());
+//        auth.authenticationProvider(provider);
+//    }
+//
+//    @Bean
+//    @Override
+//    protected SessionAuthenticationStrategy sessionAuthenticationStrategy() {
+//        return new NullAuthenticatedSessionStrategy();
+//    }
+//
+//    @Override
+//    protected void configure(HttpSecurity http) throws Exception
+//    {
+//        super.configure(http);
+//        http
+//                .authorizeRequests()
+//                .anyRequest().permitAll();
+//        http.csrf().disable();
+//    }
+//
+//    @Bean
+//    public KeycloakConfigResolver keycloakConfigResolver(){
+//        return new KeycloakSpringBootConfigResolver();
+//    }
+
+    @Bean
+    WebServerFactoryCustomizer<ConfigurableServletWebServerFactory> enableDefaultServlet() {
+        return (factory) -> factory.setRegisterDefaultServlet(true);
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200", "http://e-scan.ovh"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowCredentials(true);
+        configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Bean
+    public FilterRegistrationBean<CorsFilter> corsFilter() {
+        FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(new CorsFilter(corsConfigurationSource()));
+        bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        return bean;
+    }
+
 
     /**
      *
@@ -156,15 +174,6 @@ public class OperacionConfig implements WebMvcConfigurer {
     @Bean
     public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
         return new PersistenceExceptionTranslationPostProcessor();
-    }
-
-    Properties additionalProperties() {
-        Properties properties = new Properties();
-        properties.setProperty("hibernate.hbm2ddl.auto", "none");
-        properties.setProperty("hibernate.show_sql", "false");
-//        properties.setProperty("hibernate.format_sql", "true");
-        properties.setProperty("hibernate.dialect", "org.hibernate.spatial.dialect.postgis.PostgisDialect");
-        return properties;
     }
 
     /**
@@ -218,4 +227,6 @@ public class OperacionConfig implements WebMvcConfigurer {
     public ModelMapper modelMapper() {
         return new ModelMapper();
     }
+    
+    
 }

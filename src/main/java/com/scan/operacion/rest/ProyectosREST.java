@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Optional;
+import javax.annotation.security.RolesAllowed;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -93,6 +94,7 @@ class ProyectosREST {
      * @return
      */
     @GetMapping(value = "/activos")
+    @RolesAllowed("backend-user")
     public List<VwProyectos> dameProyectos() {
         return repoVwProyectos.dameProyectosActivos();
     }

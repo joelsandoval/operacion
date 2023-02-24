@@ -11,7 +11,7 @@ import com.scan.operacion.model.CatActividades;
 import com.scan.operacion.model.CatActividadesTipo;
 import com.scan.operacion.model.CatServicios;
 import com.scan.operacion.model.CatServiciosCategoria;
-import com.scan.operacion.model.generic.Par;
+import com.scan.operacion.model.dto.Par;
 import com.scan.operacion.model.view.VwCatActividadesServicios;
 import com.scan.operacion.model.view.VwExpCatDocumentosServicio;
 import org.slf4j.Logger;
