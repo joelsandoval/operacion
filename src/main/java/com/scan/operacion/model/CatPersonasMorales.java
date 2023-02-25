@@ -11,8 +11,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 /**
@@ -37,6 +35,12 @@ public class CatPersonasMorales implements Serializable {
     private String razon;
     @Column(name = "rfc")
     private String rfc;
+    @Column(name = "tipo")
+    private Integer tipo;
+    @Column(name = "principal")
+    private Integer principal;
+    @Column(name = "nombre_corto")
+    private String nombre_corto;
 
     public CatPersonasMorales() {
     }
@@ -69,12 +73,39 @@ public class CatPersonasMorales implements Serializable {
         this.rfc = rfc;
     }
 
+    public Integer getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(Integer tipo) {
+        this.tipo = tipo;
+    }
+
+    public Integer getPrincipal() {
+        return principal;
+    }
+
+    public void setPrincipal(Integer principal) {
+        this.principal = principal;
+    }
+
+    public String getNombre_corto() {
+        return nombre_corto;
+    }
+
+    public void setNombre_corto(String nombre_corto) {
+        this.nombre_corto = nombre_corto;
+    }
+    
+    
     @Override
     public int hashCode() {
         int hash = 0;
         hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
+
+    
 
     @Override
     public boolean equals(Object object) {

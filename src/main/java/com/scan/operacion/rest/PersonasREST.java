@@ -3,7 +3,10 @@ package com.scan.operacion.rest;
 import com.scan.operacion.dao.CatPersonasMoralesRepository;
 import com.scan.operacion.dao.view.VwFisicasUsuariosRepository;
 import com.scan.operacion.model.CatPersonasMorales;
+import com.scan.operacion.model.CatServicios;
+import com.scan.operacion.model.Proyectos;
 import com.scan.operacion.model.view.VwFisicasUsuarios;
+import com.scan.operacion.model.view.VwProyectos;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +14,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
+import java.util.Optional;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  *
@@ -38,13 +47,22 @@ class PersonasREST {
      * {@link BitacoraResolucionDTO} @RequestBody
      * @return
      */
-//    @PostMapping(value = "resolucion")
-//    @ResponseStatus(HttpStatus.CREATED)
-//    @ResponseBody
-//    public void createResolucion(@RequestBody BitacoraResolucionDTO resolucion) {
-//        serviceT.guardaResolucion(bita);
-//        LOGGER.info("Se creó la resolucion: " + bita.getBireBitacora());
-//    }
+    @PostMapping(value = "moral")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
+    public CatPersonasMorales createMoral(@RequestBody CatPersonasMorales moral) {
+        CatPersonasMorales result = new CatPersonasMorales();
+        try {
+            result = repoMorales.save(moral);
+            LOGGER.info("Se creó el cliente: {}", moral.getNombre_corto());
+            
+        } catch (Exception e) {
+            LOGGER.error("No se actualizó el cliente {} {}", moral.getNombre_corto(), e.getMessage());
+        }
+        return result;
+    }
+
+    
     @GetMapping(value = "/morales/tipo/{tipo}")
     public List<CatPersonasMorales> dameProyecto(@PathVariable("tipo") Integer tipo) {
         return repoMorales.damePersonasPorTipo(tipo);
