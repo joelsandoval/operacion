@@ -94,7 +94,7 @@ class ProyectosREST {
      * @return
      */
     @GetMapping(value = "/activos")
-    @RolesAllowed("backend-user")
+    //@RolesAllowed("backend-user")
     public List<VwProyectos> dameProyectos() {
         return repoVwProyectos.dameProyectosActivos();
     }
