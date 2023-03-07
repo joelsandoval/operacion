@@ -72,8 +72,8 @@ public class KeycloakService {
     }
 
     private RealmResource getRealmResource(){
-        Keycloak kc = KeycloakBuilder.builder().serverUrl(server_url).realm("kmc").username("admin")
-                .password("Ezequiel2517").clientId("admin-cli").resteasyClient(new ResteasyClientBuilder().connectionPoolSize(10).build())
+        Keycloak kc = KeycloakBuilder.builder().serverUrl(server_url).realm("master").username("admin")
+                .password("admin").clientId("admin-cli").resteasyClient(new ResteasyClientBuilder().connectionPoolSize(10).build())
                 .build();
         return kc.realm(realm);
     }
