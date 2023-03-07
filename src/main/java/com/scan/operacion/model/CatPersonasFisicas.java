@@ -21,8 +21,6 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "cat_personas_fisicas")
-@NamedQueries({
-    @NamedQuery(name = "CatPersonasFisicas.findAll", query = "SELECT c FROM CatPersonasFisicas c")})
 public class CatPersonasFisicas implements Serializable {
 
     private static final long serialVersionUID = 1L;
