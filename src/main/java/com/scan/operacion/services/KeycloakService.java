@@ -87,10 +87,40 @@ public class KeycloakService {
         RealmResource realmResource = getRealmResource();
         return realmResource.users();
     }
-    
+
     public RolesResource getRolesResource() {
         RealmResource realmResource = getRealmResource();
         return realmResource.roles();
     }
+
+    public UserRepresentation editUser(String id) {
+        UsersResource usersResource = getUsersResource();
+        UserRepresentation userRep = new UserRepresentation();
+        
+        try {
+            userRep = usersResource.get(id).toRepresentation();
+            userRep.setEmail("email@nuevo");
+            
+        } catch (Exception e) {
+            LOGGER.error("falló miserablemente en {}", server_url);
+            e.printStackTrace();
+        }
+
+        return userRep;
+        
+    }
     
+    public void deleteUser(String id) {
+        UsersResource usersResource = getUsersResource();
+        
+        try {
+            usersResource.delete(id);
+            
+        } catch (Exception e) {
+            LOGGER.error("falló miserablemente en {}", server_url);
+            e.printStackTrace();
+        }
+
+    }
+
 }
