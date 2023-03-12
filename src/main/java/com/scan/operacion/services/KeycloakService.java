@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import javax.ws.rs.core.Response;
 import java.util.Arrays;
+import org.keycloak.admin.client.resource.RoleScopeResource;
 import org.keycloak.admin.client.resource.RolesResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,12 +31,13 @@ public class KeycloakService {
     @Value("${keycloak.realm}")
     private String realm;
 
-    public Object[] createUser(User user) {
+    public UserRepresentation createUser(UserRepresentation user) {
         ResponseMessage message = new ResponseMessage();
         int statusId = 0;
+        UsersResource usersResource = getUsersResource();
+        UserRepresentation userRepresentation = new UserRepresentation();
+        String userId = "";
         try {
-            UsersResource usersResource = getUsersResource();
-            UserRepresentation userRepresentation = new UserRepresentation();
             userRepresentation.setUsername(user.getUsername());
             userRepresentation.setEmail(user.getEmail());
             userRepresentation.setFirstName(user.getFirstName());
@@ -48,17 +50,22 @@ public class KeycloakService {
             if (statusId == 201) {
                 try {
                     String path = result.getLocation().getPath();
-                    String userId = path.substring(path.lastIndexOf("/") + 1);
+                    LOGGER.info(path);
+                    userId = path.substring(path.lastIndexOf("/") + 1);
                     CredentialRepresentation passwordCredential = new CredentialRepresentation();
                     passwordCredential.setTemporary(false);
                     passwordCredential.setType(CredentialRepresentation.PASSWORD);
-                    passwordCredential.setValue(user.getPassword());
+                    CredentialRepresentation cred = user.getCredentials().get(0);
+                    passwordCredential.setValue(cred.getValue());
                     usersResource.get(userId).resetPassword(passwordCredential);
 
                     RealmResource realmResource = getRealmResource();
-                    RoleRepresentation roleRepresentation = realmResource.roles().get("app-user").toRepresentation();
-                    realmResource.users().get(userId).roles().realmLevel().add(Arrays.asList(roleRepresentation));
-                    message.setMessage("usuario creado con éxito");
+                    RoleRepresentation roleRepresentation = new RoleRepresentation();
+                    for (String role : user.getRealmRoles()) {
+                        roleRepresentation = realmResource.roles().get(role).toRepresentation();
+                        realmResource.users().get(userId).roles().realmLevel().add(Arrays.asList(roleRepresentation));
+                    }
+                    LOGGER.info("usuario creado con éxito");
                 } catch (Exception e) {
                     LOGGER.error("falló al asignar los roles  en {}", server_url);
                     e.printStackTrace();
@@ -73,7 +80,7 @@ public class KeycloakService {
             e.printStackTrace();
         }
 
-        return new Object[]{statusId, message};
+        return usersResource.get(userId).toRepresentation();
     }
 
     public RealmResource getRealmResource() {
@@ -88,38 +95,57 @@ public class KeycloakService {
         return realmResource.users();
     }
 
+    public RoleScopeResource getUsersRealmRoles(String id) {
+        RealmResource realmResource = getRealmResource();
+        return realmResource.users().get(id).roles().realmLevel();
+    }
+
     public RolesResource getRolesResource() {
         RealmResource realmResource = getRealmResource();
         return realmResource.roles();
     }
 
-    public UserRepresentation editUser(String id) {
+    public UserRepresentation editUser(UserRepresentation user) {
         UsersResource usersResource = getUsersResource();
-        UserRepresentation userRep = new UserRepresentation();
         
         try {
+            usersResource.get(user.getId()).update(user);
+            LOGGER.info("Se actualizó el usuario {} {}", user.getUsername(), user.getFirstName());
+        } catch (Exception e) {
+            LOGGER.error("falló la edicion en {}", user.getUsername());
+            e.printStackTrace();
+        }
+
+        return usersResource.get(user.getId()).toRepresentation();
+
+    }
+
+    public void deleteUser(String id) {
+        UsersResource usersResource = getUsersResource();
+
+        try {
+            usersResource.delete(id);
+
+        } catch (Exception e) {
+            LOGGER.error("falló miserablemente en {}", server_url);
+            e.printStackTrace();
+        }
+
+    }
+
+    public UserRepresentation getUser(String id) {
+        UsersResource usersResource = getUsersResource();
+        UserRepresentation userRep = new UserRepresentation();
+
+        try {
             userRep = usersResource.get(id).toRepresentation();
-            userRep.setEmail("email@nuevo");
-            
+            LOGGER.info("Se recupera el usuario {}", userRep.getUsername());
         } catch (Exception e) {
             LOGGER.error("falló miserablemente en {}", server_url);
             e.printStackTrace();
         }
 
         return userRep;
-        
-    }
-    
-    public void deleteUser(String id) {
-        UsersResource usersResource = getUsersResource();
-        
-        try {
-            usersResource.delete(id);
-            
-        } catch (Exception e) {
-            LOGGER.error("falló miserablemente en {}", server_url);
-            e.printStackTrace();
-        }
 
     }
 
