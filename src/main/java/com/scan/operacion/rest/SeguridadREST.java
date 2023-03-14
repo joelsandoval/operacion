@@ -84,4 +84,11 @@ class SeguridadREST {
     public UserRepresentation editUser(@RequestBody UserRepresentation user) {
         return kcService.editUser(user);
     }
+    
+    @PostMapping("/edit-user-creds")
+    public UserRepresentation editUserCreds(@RequestBody UserRepresentation user) {
+        return kcService.editUser(user);
+    }
+    
+    
 }
