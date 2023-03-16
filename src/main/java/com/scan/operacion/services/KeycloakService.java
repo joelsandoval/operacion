@@ -56,8 +56,7 @@ public class KeycloakService {
                     passwordCredential.setTemporary(false);
                     passwordCredential.setType(CredentialRepresentation.PASSWORD);
                     CredentialRepresentation cred = user.getCredentials().get(0);
-                    passwordCredential.setValue(cred.getValue());
-                    usersResource.get(userId).resetPassword(passwordCredential);
+                    
 
                     RealmResource realmResource = getRealmResource();
                     RoleRepresentation roleRepresentation = new RoleRepresentation();
@@ -113,7 +112,6 @@ public class KeycloakService {
             LOGGER.info("Se actualizó el usuario {} {}", user.getUsername(), user.getFirstName());
         } catch (Exception e) {
             LOGGER.error("falló la edicion en {}", user.getUsername());
-            e.printStackTrace();
         }
 
         return usersResource.get(user.getId()).toRepresentation();

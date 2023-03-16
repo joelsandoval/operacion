@@ -38,8 +38,6 @@ public class VwFisicasUsuarios implements Serializable {
     private Integer usuarioId;
     @Column(name = "usuario")
     private String usuario;
-    @Column(name = "password")
-    private String password;
     @Column(name = "alias")
     private String alias;
 
@@ -116,14 +114,6 @@ public class VwFisicasUsuarios implements Serializable {
 
     public void setUsuario(String usuario) {
         this.usuario = usuario;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getAlias() {

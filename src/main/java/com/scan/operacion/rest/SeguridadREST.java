@@ -1,6 +1,5 @@
 package com.scan.operacion.rest;
 
-import com.scan.operacion.model.dto.ResponseMessage;
 import com.scan.operacion.services.KeycloakService;
 import java.util.Collections;
 import java.util.Comparator;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -74,7 +72,7 @@ class SeguridadREST {
     }
     
      /**
-     * Guarda el usuario en la base de datos de KeyCloack
+     * Edita un usuario en la base de datos de KeyCloack
      * UserRepresentstion
      *
      * @param user se recibe un objeto UserRepresentation del front
