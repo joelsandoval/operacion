@@ -109,7 +109,30 @@ public class KeycloakService {
         
         try {
             usersResource.get(user.getId()).update(user);
-            LOGGER.info("Se actualizó el usuario {} {}", user.getUsername(), user.getFirstName());
+            LOGGER.info("Se actualizó el usuario {} {} {} {}", user.getUsername(),  user.getCredentials(), user.getFirstName(), user.getEmail());
+        } catch (Exception e) {
+            LOGGER.error("falló la edicion en {}", user.getUsername());
+            e.printStackTrace();
+        }
+
+        return usersResource.get(user.getId()).toRepresentation();
+
+    }
+    
+    public UserRepresentation editUserCreds  (UserRepresentation user) {
+        UsersResource usersResource = getUsersResource();
+        String userId = "";
+        
+        try {
+        	userId = user.getId();
+        	LOGGER.info(userId);
+        	CredentialRepresentation passwordCredential = new CredentialRepresentation();
+            passwordCredential.setTemporary(false);
+            passwordCredential.setType(CredentialRepresentation.PASSWORD);
+            CredentialRepresentation cred = user.getCredentials().get(0);
+            passwordCredential.setValue(cred.getValue());
+            usersResource.get(userId).resetPassword(passwordCredential);
+            LOGGER.info("Se actualizó el usuario {} {} {} {}", user.getUsername(),  user.getCredentials(), user.getFirstName(), user.getEmail());
         } catch (Exception e) {
             LOGGER.error("falló la edicion en {}", user.getUsername());
         }
