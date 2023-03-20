@@ -88,5 +88,14 @@ class SeguridadREST {
         return kcService.editUser(user);
     }
     
+    @GetMapping(value = "/user-addrol/{userId},{rolName}")
+    public String addUserRol(@PathVariable("userId") String userId, @PathVariable("rolName") String rolName ) {
+        return kcService.addUserRol(userId, rolName);
+    }
+    
+    @GetMapping(value = "/user-delrol/{userId},{rolName}")
+    public String removeUserRol(@PathVariable("userId") String userId, @PathVariable("rolName") String rolName ) {
+        return kcService.removeUserRol(userId, rolName);
+    }
     
 }

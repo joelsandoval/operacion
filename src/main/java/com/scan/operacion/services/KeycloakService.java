@@ -23,151 +23,189 @@ import org.slf4j.LoggerFactory;
 @Service
 public class KeycloakService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(KeycloakService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(KeycloakService.class);
 
-    @Value("${keycloak.auth-server-url}")
-    private String server_url;
+	@Value("${keycloak.auth-server-url}")
+	private String server_url;
 
-    @Value("${keycloak.realm}")
-    private String realm;
+	@Value("${keycloak.realm}")
+	private String realm;
 
-    public UserRepresentation createUser(UserRepresentation user) {
-        ResponseMessage message = new ResponseMessage();
-        int statusId = 0;
-        UsersResource usersResource = getUsersResource();
-        UserRepresentation userRepresentation = new UserRepresentation();
-        String userId = "";
-        try {
-            userRepresentation.setUsername(user.getUsername());
-            userRepresentation.setEmail(user.getEmail());
-            userRepresentation.setFirstName(user.getFirstName());
-            userRepresentation.setLastName(user.getLastName());
-            userRepresentation.setEnabled(true);
+	public UserRepresentation createUser(UserRepresentation user) {
+		ResponseMessage message = new ResponseMessage();
+		int statusId = 0;
+		UsersResource usersResource = getUsersResource();
+		UserRepresentation userRepresentation = new UserRepresentation();
+		String userId = "";
+		try {
+			userRepresentation.setUsername(user.getUsername());
+			userRepresentation.setEmail(user.getEmail());
+			userRepresentation.setFirstName(user.getFirstName());
+			userRepresentation.setLastName(user.getLastName());
+			userRepresentation.setEnabled(true);
 
-            Response result = usersResource.create(userRepresentation);
-            statusId = result.getStatus();
+			Response result = usersResource.create(userRepresentation);
+			statusId = result.getStatus();
 
-            if (statusId == 201) {
-                try {
-                    String path = result.getLocation().getPath();
-                    LOGGER.info(path);
-                    userId = path.substring(path.lastIndexOf("/") + 1);
-                    CredentialRepresentation passwordCredential = new CredentialRepresentation();
-                    passwordCredential.setTemporary(false);
-                    passwordCredential.setType(CredentialRepresentation.PASSWORD);
-                    CredentialRepresentation cred = user.getCredentials().get(0);
-                    
+			if (statusId == 201) {
+				try {
+					String path = result.getLocation().getPath();
+					LOGGER.info(path);
+					userId = path.substring(path.lastIndexOf("/") + 1);
+					CredentialRepresentation passwordCredential = new CredentialRepresentation();
+					passwordCredential.setTemporary(false);
+					passwordCredential.setType(CredentialRepresentation.PASSWORD);
+					CredentialRepresentation cred = user.getCredentials().get(0);
 
-                    RealmResource realmResource = getRealmResource();
-                    RoleRepresentation roleRepresentation = new RoleRepresentation();
-                    for (String role : user.getRealmRoles()) {
-                        roleRepresentation = realmResource.roles().get(role).toRepresentation();
-                        realmResource.users().get(userId).roles().realmLevel().add(Arrays.asList(roleRepresentation));
-                    }
-                    LOGGER.info("usuario creado con éxito");
-                } catch (Exception e) {
-                    LOGGER.error("falló al asignar los roles  en {}", server_url);
-                    e.printStackTrace();
-                }
-            } else if (statusId == 409) {
-                message.setMessage("ese usuario ya existe");
-            } else {
-                message.setMessage("error creando el usuario");
-            }
-        } catch (Exception e) {
-            LOGGER.error("falló miserablemente en {}", server_url);
-            e.printStackTrace();
-        }
+					RealmResource realmResource = getRealmResource();
+					RoleRepresentation roleRepresentation = new RoleRepresentation();
+					for (String role : user.getRealmRoles()) {
+						roleRepresentation = realmResource.roles().get(role).toRepresentation();
+						realmResource.users().get(userId).roles().realmLevel().add(Arrays.asList(roleRepresentation));
+					}
+					LOGGER.info("usuario creado con éxito");
+				} catch (Exception e) {
+					LOGGER.error("falló al asignar los roles  en {}", server_url);
+					e.printStackTrace();
+				}
+			} else if (statusId == 409) {
+				message.setMessage("ese usuario ya existe");
+			} else {
+				message.setMessage("error creando el usuario");
+			}
+		} catch (Exception e) {
+			LOGGER.error("falló miserablemente en {}", server_url);
+			e.printStackTrace();
+		}
 
-        return usersResource.get(userId).toRepresentation();
-    }
+		return usersResource.get(userId).toRepresentation();
+	}
 
-    public RealmResource getRealmResource() {
-        Keycloak kc = KeycloakBuilder.builder().serverUrl(server_url).realm("master").username("admin")
-                .password("admin").clientId("admin-cli").resteasyClient(new ResteasyClientBuilder().connectionPoolSize(10).build())
-                .build();
-        return kc.realm(realm);
-    }
+	public RealmResource getRealmResource() {
+		Keycloak kc = KeycloakBuilder.builder().serverUrl(server_url).realm("master").username("admin")
+				.password("admin").clientId("admin-cli")
+				.resteasyClient(new ResteasyClientBuilder().connectionPoolSize(10).build()).build();
+		return kc.realm(realm);
+	}
 
-    public UsersResource getUsersResource() {
-        RealmResource realmResource = getRealmResource();
-        return realmResource.users();
-    }
+	public UsersResource getUsersResource() {
+		RealmResource realmResource = getRealmResource();
+		return realmResource.users();
+	}
 
-    public RoleScopeResource getUsersRealmRoles(String id) {
-        RealmResource realmResource = getRealmResource();
-        return realmResource.users().get(id).roles().realmLevel();
-    }
+	public RoleScopeResource getUsersRealmRoles(String id) {
+		RealmResource realmResource = getRealmResource();
+		return realmResource.users().get(id).roles().realmLevel();
+	}
 
-    public RolesResource getRolesResource() {
-        RealmResource realmResource = getRealmResource();
-        return realmResource.roles();
-    }
+	public RolesResource getRolesResource() {
+		RealmResource realmResource = getRealmResource();
+		return realmResource.roles();
+	}
 
-    public UserRepresentation editUser(UserRepresentation user) {
-        UsersResource usersResource = getUsersResource();
-        
-        try {
-            usersResource.get(user.getId()).update(user);
-            LOGGER.info("Se actualizó el usuario {} {} {} {}", user.getUsername(),  user.getCredentials(), user.getFirstName(), user.getEmail());
-        } catch (Exception e) {
-            LOGGER.error("falló la edicion en {}", user.getUsername());
-            e.printStackTrace();
-        }
+	public UserRepresentation editUser(UserRepresentation user) {
+		UsersResource usersResource = getUsersResource();
 
-        return usersResource.get(user.getId()).toRepresentation();
+		try {
+			usersResource.get(user.getId()).update(user);
+			LOGGER.info("Se actualizó el usuario {} {} {} {}", user.getUsername(), user.getCredentials(),
+					user.getFirstName(), user.getEmail());
+		} catch (Exception e) {
+			LOGGER.error("falló la edicion en {}", user.getUsername());
+			e.printStackTrace();
+		}
 
-    }
-    
-    public UserRepresentation editUserCreds  (UserRepresentation user) {
-        UsersResource usersResource = getUsersResource();
-        String userId = "";
-        
-        try {
-        	userId = user.getId();
-        	LOGGER.info(userId);
-        	CredentialRepresentation passwordCredential = new CredentialRepresentation();
-            passwordCredential.setTemporary(false);
-            passwordCredential.setType(CredentialRepresentation.PASSWORD);
-            CredentialRepresentation cred = user.getCredentials().get(0);
-            passwordCredential.setValue(cred.getValue());
-            usersResource.get(userId).resetPassword(passwordCredential);
-            LOGGER.info("Se actualizó el usuario {} {} {} {}", user.getUsername(),  user.getCredentials(), user.getFirstName(), user.getEmail());
-        } catch (Exception e) {
-            LOGGER.error("falló la edicion en {}", user.getUsername());
-        }
+		return usersResource.get(user.getId()).toRepresentation();
 
-        return usersResource.get(user.getId()).toRepresentation();
+	}
 
-    }
+	public UserRepresentation editUserCreds(UserRepresentation user) {
+		UsersResource usersResource = getUsersResource();
+		String userId = "";
 
-    public void deleteUser(String id) {
-        UsersResource usersResource = getUsersResource();
+		try {
+			userId = user.getId();
+			LOGGER.info(userId);
+			CredentialRepresentation passwordCredential = new CredentialRepresentation();
+			passwordCredential.setTemporary(false);
+			passwordCredential.setType(CredentialRepresentation.PASSWORD);
+			CredentialRepresentation cred = user.getCredentials().get(0);
+			passwordCredential.setValue(cred.getValue());
+			usersResource.get(userId).resetPassword(passwordCredential);
+			LOGGER.info("Se actualizó el usuario {} {} {} {}", user.getUsername(), user.getCredentials(),
+					user.getFirstName(), user.getEmail());
+		} catch (Exception e) {
+			LOGGER.error("falló la edicion en {}", user.getUsername());
+		}
 
-        try {
-            usersResource.delete(id);
+		return usersResource.get(user.getId()).toRepresentation();
 
-        } catch (Exception e) {
-            LOGGER.error("falló miserablemente en {}", server_url);
-            e.printStackTrace();
-        }
+	}
 
-    }
+	public void deleteUser(String id) {
+		UsersResource usersResource = getUsersResource();
 
-    public UserRepresentation getUser(String id) {
-        UsersResource usersResource = getUsersResource();
-        UserRepresentation userRep = new UserRepresentation();
+		try {
+			usersResource.delete(id);
 
-        try {
-            userRep = usersResource.get(id).toRepresentation();
-            LOGGER.info("Se recupera el usuario {}", userRep.getUsername());
-        } catch (Exception e) {
-            LOGGER.error("falló miserablemente en {}", server_url);
-            e.printStackTrace();
-        }
+		} catch (Exception e) {
+			LOGGER.error("falló miserablemente en {}", server_url);
+			e.printStackTrace();
+		}
 
-        return userRep;
+	}
 
-    }
+	// Add client role
+	public String addUserRol(String userId, String rolName) {
+
+		RealmResource realmResource = getRealmResource();
+		RoleRepresentation roleRepresentation = new RoleRepresentation();
+		try {
+			roleRepresentation = realmResource.roles().get(rolName).toRepresentation();
+			realmResource.users().get(userId).roles().realmLevel().add(Arrays.asList(roleRepresentation));
+			
+		} catch (Exception e) {
+			LOGGER.error("falló miserablemente en {}", server_url);
+			e.printStackTrace();
+		}
+		
+		return "Rol: " + rolName + " añadido para el usuario: " + userId;
+
+	}
+	
+	// Delete client role
+		public String removeUserRol(String userId, String rolName) {
+
+			RealmResource realmResource = getRealmResource();
+			RoleRepresentation roleRepresentation = new RoleRepresentation();
+			try {
+				roleRepresentation = realmResource.roles().get(rolName).toRepresentation();
+				realmResource.users().get(userId).roles().realmLevel().remove(Arrays.asList(roleRepresentation));
+				
+			} catch (Exception e) {
+				LOGGER.error("falló miserablemente en {}", server_url);
+				e.printStackTrace();
+			}
+
+		
+			return "Rol: " + rolName + " borrado  para el usuario: " + userId;
+
+		}
+
+	public UserRepresentation getUser(String id) {
+		UsersResource usersResource = getUsersResource();
+		UserRepresentation userRep = new UserRepresentation();
+
+		try {
+			userRep = usersResource.get(id).toRepresentation();
+			LOGGER.info("Se recupera el usuario {}", userRep.getUsername());
+		} catch (Exception e) {
+			LOGGER.error("falló miserablemente en {}", server_url);
+			e.printStackTrace();
+		}
+
+		return userRep;
+
+	}
 
 }
