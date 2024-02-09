@@ -1,7 +1,9 @@
 package com.scan.operacion.rest;
 
+import com.scan.operacion.dao.CatPersonasFisicasRepository;
 import com.scan.operacion.dao.CatPersonasMoralesRepository;
 import com.scan.operacion.dao.view.VwFisicasUsuariosRepository;
+import com.scan.operacion.model.CatPersonasFisicas;
 import com.scan.operacion.model.CatPersonasMorales;
 import com.scan.operacion.model.view.VwFisicasUsuarios;
 import org.slf4j.Logger;
@@ -32,6 +34,8 @@ class PersonasREST {
 
     @Autowired
     private CatPersonasMoralesRepository repoMorales;
+    @Autowired
+    private CatPersonasFisicasRepository repoFisicas;
     @Autowired
     private VwFisicasUsuariosRepository repoFisicasF;
 
@@ -67,5 +71,10 @@ class PersonasREST {
     @GetMapping(value = "/fisicas/moral/{moral}")
     public List<VwFisicasUsuarios> dameFisicasPorMoral(@PathVariable("moral") Integer moral) {
         return repoFisicasF.dameUsuarios(moral);
+    }
+    
+    @GetMapping(value = "/todos")
+    public List<CatPersonasFisicas> dameTodos() {
+        return repoFisicas.dameTodos();
     }
 }

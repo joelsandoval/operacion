@@ -4,6 +4,8 @@
  */
 package com.scan.operacion;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import java.util.Arrays;
 import java.util.Properties;
 import javax.persistence.EntityManagerFactory;
@@ -22,6 +24,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -45,7 +48,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(basePackages = {"com.scan.operacion.dao"}, transactionManagerRef = "transactionManager", entityManagerFactoryRef = "entityManagerFactory")
-@ComponentScan({"com.scan.operacion.dao"}) 
+@ComponentScan({"com.scan.operacion.dao"})
 public class OperacionConfig implements WebMvcConfigurer {
 
     @Autowired
@@ -54,8 +57,8 @@ public class OperacionConfig implements WebMvcConfigurer {
     public OperacionConfig() {
         super();
     }
-    
-     /**
+
+    /**
      *
      * @return
      */
@@ -86,7 +89,7 @@ public class OperacionConfig implements WebMvcConfigurer {
         dataSource.setPassword(env.getProperty("spring.datasource.password"));
         return dataSource;
     }
-    
+
     Properties additionalProperties() {
         Properties properties = new Properties();
         properties.setProperty("hibernate.hbm2ddl.auto", "none");
@@ -95,35 +98,6 @@ public class OperacionConfig implements WebMvcConfigurer {
         properties.setProperty("hibernate.dialect", "org.hibernate.spatial.dialect.postgis.PostgisDialect");
         return properties;
     }
-
-    
-//    @Autowired
-//    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-//        KeycloakAuthenticationProvider provider = new KeycloakAuthenticationProvider();
-//        provider.setGrantedAuthoritiesMapper(new SimpleAuthorityMapper());
-//        auth.authenticationProvider(provider);
-//    }
-//
-//    @Bean
-//    @Override
-//    protected SessionAuthenticationStrategy sessionAuthenticationStrategy() {
-//        return new NullAuthenticatedSessionStrategy();
-//    }
-//
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception
-//    {
-//        super.configure(http);
-//        http
-//                .authorizeRequests()
-//                .anyRequest().permitAll();
-//        http.csrf().disable();
-//    }
-//
-//    @Bean
-//    public KeycloakConfigResolver keycloakConfigResolver(){
-//        return new KeycloakSpringBootConfigResolver();
-//    }
 
     @Bean
     WebServerFactoryCustomizer<ConfigurableServletWebServerFactory> enableDefaultServlet() {
@@ -152,7 +126,6 @@ public class OperacionConfig implements WebMvcConfigurer {
         bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
         return bean;
     }
-
 
     /**
      *
@@ -227,6 +200,13 @@ public class OperacionConfig implements WebMvcConfigurer {
     public ModelMapper modelMapper() {
         return new ModelMapper();
     }
-    
-    
+
+    @Bean
+    public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter(mapper);
+        return converter;
+    }
+
 }

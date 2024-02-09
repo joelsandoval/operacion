@@ -5,6 +5,7 @@ import com.scan.operacion.commons.MyResourceNotFoundException;
 import com.scan.operacion.commons.RestPreconditions;
 import com.scan.operacion.dao.ArchivosRepository;
 import com.scan.operacion.model.Archivos;
+import com.scan.operacion.model.ArchivosActividades;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import com.scan.operacion.dao.ArchivosActividadesRepository;
 
 /**
  *
@@ -33,6 +35,8 @@ class ArchivosREST {
     @Autowired
     private ArchivosRepository repository;
     
+    @Autowired
+    private ArchivosActividadesRepository repoActividades;
     
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -57,5 +61,25 @@ class ArchivosREST {
         return RestPreconditions.checkFound(repository.dameArchivosExpedienteTT(tramite,tipo));
     }
     
+          
+    @GetMapping(value = "/proyecto/{proyecto}")
+    @ResponseBody
+    public List<Archivos> porProyecto(@PathVariable("proyecto") Integer proyecto) throws MyResourceNotFoundException {
+        return RestPreconditions.checkFound(repository.dameArchivosProyecto(proyecto));
+    }
+    
+    @GetMapping(value = "/actividad/{actividad}")
+    @ResponseBody
+    public List<Archivos> porActividad(@PathVariable("actividad") Integer actividad) throws MyResourceNotFoundException {
+        return RestPreconditions.checkFound(repository.dameArchivosActividad(actividad));
+    }
+    
+   @PostMapping(value = "/actividad")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
+    public Archivos create(@RequestBody ArchivosActividades resource) {
+        ArchivosActividades resulta = repoActividades.save(resource);
+        return repository.findById(resulta.getArchivo()).get();
+    }
     
 }

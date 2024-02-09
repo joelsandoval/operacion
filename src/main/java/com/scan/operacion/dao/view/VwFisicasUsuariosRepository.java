@@ -17,6 +17,5 @@ public interface VwFisicasUsuariosRepository extends CrudRepository<VwFisicasUsu
 
     @Query(value = "select f.* from operacion.vw_fisicas_usuarios f where f.moral = :moral", nativeQuery = true)
     public List<VwFisicasUsuarios> dameUsuarios(@Param("moral") Integer moral);
-    
       
 }

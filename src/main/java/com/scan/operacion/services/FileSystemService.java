@@ -275,4 +275,54 @@ public class FileSystemService {
     }
     
 
+    public String storeFileProyecto(MultipartFile file, Integer cliente, Integer proyecto) {
+
+        String fileName = armaFileName(file.getOriginalFilename());
+        String ruta = env.getProperty("file.upload-dir") + cliente.toString() + "/" + proyecto.toString() + "/";
+        Path fileStorageFinal = Paths.get(ruta).toAbsolutePath().normalize();
+        LOGGER.info(ruta);
+
+        try {
+            Files.createDirectories(fileStorageFinal);
+            LOGGER.info("Se crea el directorio {}", ruta);
+        } catch (IOException ex) {
+            throw new FileStorageException(MENSAJEDIRECTORIO, ex);
+        }
+
+        try {
+            // Check if the file's name contains invalid characters
+            if (fileName.contains("..")) {
+                throw new FileStorageException(MENSAJERUTA + fileName);
+            }
+
+            // Copy file to the target location (Replacing existing file with the same name)            
+            Path targetLocation = fileStorageFinal.resolve(fileName);
+            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+            LOGGER.info("Archivo creado con éxito {}", fileName);
+            return fileName;
+
+        } catch (IOException ex) {
+            throw new FileStorageException(MENSAJESTORE + fileName + MENSAJETRY, ex);
+        }
+    }
+    
+    public Resource loadFileProyecto(String fileName, Integer cliente, Integer proyecto) {
+
+        try {
+            String rutaP = env.getProperty("file.upload-dir") + cliente.toString() + "/" + proyecto.toString() + "/";
+            LOGGER.info("rutaP: {}", rutaP);
+            Path fileStorageFinal = Paths.get(rutaP).toAbsolutePath().normalize();
+            Path filePath = fileStorageFinal.resolve(fileName).normalize();
+            Resource resource = new UrlResource(filePath.toUri());
+            if (resource.exists()) {
+                //serviceAud.registraDescarga(filePath.toString(), 0, bitacora);
+                return resource;
+            } else {
+                throw new MyFileNotFoundException(MENSAJEENCONTRADO + rutaP);
+            }
+        } catch (MalformedURLException ex) {
+            throw new MyFileNotFoundException(MENSAJEENCONTRADO + fileName, ex);
+        }
+    }
+    
 }

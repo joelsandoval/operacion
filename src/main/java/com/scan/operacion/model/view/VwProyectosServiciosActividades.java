@@ -9,8 +9,6 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -52,6 +50,17 @@ public class VwProyectosServiciosActividades implements Serializable {
     private String responsable;
     @Column(name = "clase")
     private String clase;
+    @Column(name = "vencimiento")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date vencimiento;
+    @Column(name = "dias")
+    private Integer dias;
+    @Column(name = "estado")
+    private Integer estado;
+    @Column(name = "semaforo")
+    private Integer semaforo;
+     @Column(name = "terminado")
+    private Boolean terminado;
 
     public VwProyectosServiciosActividades() {
     }
@@ -158,6 +167,93 @@ public class VwProyectosServiciosActividades implements Serializable {
 
     public void setClase(String clase) {
         this.clase = clase;
+    }
+
+    public Date getVencimiento() {
+        return vencimiento;
+    }
+
+    public void setVencimiento(Date vencimiento) {
+        this.vencimiento = vencimiento;
+    }
+
+    public Integer getDias() {
+        return dias;
+    }
+
+    public void setDias(Integer dias) {
+        this.dias = dias;
+    }
+
+    public Integer getEstado() {
+        return estado;
+    }
+
+    public void setEstado(Integer estado) {
+        this.estado = estado;
+    }
+
+    public Integer getSemaforo() {
+        return semaforo;
+    }
+
+    public void setSemaforo(Integer semaforo) {
+        this.semaforo = semaforo;
+    }
+
+    public String getSemaforoColor() {
+        Integer smf = this.semaforo;
+        Integer av = this.estado;
+        String color = "badge-verde";
+        switch (av) {
+            case 0:
+                color = "badge-rojo";
+                break;
+            case 1:
+                color = "badge-azul";
+                break;
+            case 2:
+                if (smf == 1) {
+                    color = "badge-naranja";
+                } else if (smf == 2) {
+                    color = "badge-amarillo";
+                } else {
+                    color = "badge-verde";
+                }
+        }
+        return color;
+    }
+    
+    
+    public String getSemaforoEtiqueta() {
+        Integer sema = this.semaforo;
+        Integer esta = this.estado;
+        String etiqueta = "En tiempo";
+        switch (esta) {
+            case 0:
+                etiqueta = "Vencido";
+                break;
+            case 1:
+                etiqueta = "Vence hoy";
+                break;
+            case 2:
+                if (sema == 1) {
+                    etiqueta = "Vence pronto";
+                } else if (sema == 2) {
+                    etiqueta = "Por vencer";
+                } else {
+                    etiqueta = "En tiempo";
+                }
+        }
+        return etiqueta;
+    }
+
+    public Boolean getTerminado() {
+        return terminado;
+    }
+
+    public void setTerminado(Boolean terminado) {
+        this.terminado = terminado;
     }
     
 }

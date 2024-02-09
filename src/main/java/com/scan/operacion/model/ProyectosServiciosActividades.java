@@ -49,6 +49,11 @@ public class ProyectosServiciosActividades implements Serializable {
     private String observaciones;
     @Column(name = "documento")
     private Integer documento;
+    @Column(name = "vencimiento")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date vencimiento;
+    @Column(name = "terminado")
+    private Boolean terminado;
 
     public ProyectosServiciosActividades() {
     }
@@ -72,7 +77,7 @@ public class ProyectosServiciosActividades implements Serializable {
     public void setServicio(Integer servicio) {
         this.servicio = servicio;
     }
-    
+
     public Integer getTipo() {
         return tipo;
     }
@@ -137,6 +142,22 @@ public class ProyectosServiciosActividades implements Serializable {
         this.documento = documento;
     }
 
+    public Date getVencimiento() {
+        return vencimiento;
+    }
+
+    public void setVencimiento(Date vencimiento) {
+        this.vencimiento = vencimiento;
+    }
+
+    public Boolean getTerminado() {
+        return terminado;
+    }
+
+    public void setTerminado(Boolean terminado) {
+        this.terminado = terminado;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -161,5 +182,5 @@ public class ProyectosServiciosActividades implements Serializable {
     public String toString() {
         return "com.scan.operacion.model.ProyectosServiciosActividades[ id=" + id + " ]";
     }
-    
+
 }

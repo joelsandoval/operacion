@@ -41,6 +41,11 @@ public class CatPersonasFisicas implements Serializable {
     private String correo;
     @Column(name = "telefono")
     private String telefono;
+    @Column(name = "iniciales")
+    private String iniciales;
+    @Column(name = "alias")
+    private String alias;
+    
 
     public CatPersonasFisicas() {
     }
@@ -103,6 +108,22 @@ public class CatPersonasFisicas implements Serializable {
 
     public void setTelefono(String telefono) {
         this.telefono = telefono;
+    }
+
+    public String getIniciales() {
+        return iniciales;
+    }
+
+    public void setIniciales(String iniciales) {
+        this.iniciales = iniciales;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 
     @Override

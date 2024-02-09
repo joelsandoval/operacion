@@ -17,7 +17,10 @@ public interface VwProyectosServiciosActividadesRepository extends PagingAndSort
 
     Optional<VwProyectosServiciosActividades> findById(Integer id);
     
-    @Query(value = "select a.* from operacion.vw_proyectos_servicios_actividades a where a.servicio = :servicio order by a.fecha desc", nativeQuery = true)
+    @Query(value = "select a.* from operacion.vw_proyectos_servicios_actividades a where a.servicio = :servicio order by a.fecha", nativeQuery = true)
     public List<VwProyectosServiciosActividades> dameActividades(@Param("servicio") Integer servicio);
+    
+    @Query(value = "select a.* from operacion.vw_proyectos_servicios_actividades a where a.servicio = :servicio order by a.vencimiento asc limit 1", nativeQuery = true)
+    public Optional<VwProyectosServiciosActividades> dameProximoVencimiento(@Param("servicio") Integer servicio);
       
 }
