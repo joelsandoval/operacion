@@ -18,25 +18,21 @@ import javax.persistence.TemporalType;
  * @author Joel
  */
 @Entity
-@Table(name = "vw_proyectos_servicios_actividades", schema = "operacion")
-public class VwProyectosServiciosActividades implements Serializable {
+@Table(name = "vw_actividades", schema = "operacion")
+public class VwActividades implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @Column(name = "id")
     private Integer id;
-    @Column(name = "servicio")
-    private Integer servicio;
+    @Column(name = "servicio_id")
+    private Integer servicioId;
     @Column(name = "actividad_id")
     private Integer actividadId;
-    @Column(name = "actividad")
-    private String actividad;
     @Column(name = "descripcion")
     private String descripcion;
     @Column(name = "tipo_id")
     private Integer tipoId;
-    @Column(name = "tipo")
-    private String tipo;
     @Column(name = "fecha")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fecha;
@@ -63,8 +59,14 @@ public class VwProyectosServiciosActividades implements Serializable {
     private Boolean terminado;
     @Column(name = "observaciones")
     private String observaciones;
-
-    public VwProyectosServiciosActividades() {
+    @Column(name = "proyecto")
+    private String proyecto;
+    @Column(name = "proyecto_id")
+    private Integer proyectoId;
+    @Column(name = "servicio")
+    private String servicio;
+    
+    public VwActividades() {
     }
 
     public Integer getId() {
@@ -75,14 +77,6 @@ public class VwProyectosServiciosActividades implements Serializable {
         this.id = id;
     }
 
-    public Integer getServicio() {
-        return servicio;
-    }
-
-    public void setServicio(Integer servicio) {
-        this.servicio = servicio;
-    }
-
     public Integer getActividadId() {
         return actividadId;
     }
@@ -90,15 +84,7 @@ public class VwProyectosServiciosActividades implements Serializable {
     public void setActividadId(Integer actividadId) {
         this.actividadId = actividadId;
     }
-
-    public String getActividad() {
-        return actividad;
-    }
-
-    public void setActividad(String actividad) {
-        this.actividad = actividad;
-    }
-
+    
     public String getDescripcion() {
         return descripcion;
     }
@@ -115,14 +101,7 @@ public class VwProyectosServiciosActividades implements Serializable {
         this.tipoId = tipoId;
     }
 
-    public String getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
-    }
-
+    
     public Date getFecha() {
         return fecha;
     }
@@ -263,6 +242,38 @@ public class VwProyectosServiciosActividades implements Serializable {
 
     public void setObservaciones(String observaciones) {
         this.observaciones = observaciones;
+    }
+
+    public Integer getServicioId() {
+        return servicioId;
+    }
+
+    public void setServicioId(Integer servicioId) {
+        this.servicioId = servicioId;
+    }
+
+    public String getProyecto() {
+        return proyecto;
+    }
+
+    public void setProyecto(String proyecto) {
+        this.proyecto = proyecto;
+    }
+
+    public Integer getProyectoId() {
+        return proyectoId;
+    }
+
+    public void setProyectoId(Integer proyectoId) {
+        this.proyectoId = proyectoId;
+    }
+
+    public String getServicio() {
+        return servicio;
+    }
+
+    public void setServicio(String servicio) {
+        this.servicio = servicio;
     }
 
 }

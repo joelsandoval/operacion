@@ -19,6 +19,8 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
+import org.keycloak.KeycloakPrincipal;
+import org.keycloak.representations.idm.UserRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -72,13 +75,16 @@ public class FileSystemREST {
                 .path(fileName)
                 .toUriString();
         Date fecha = new Date();
+
+        UserRepresentation userRepresentation = new UserRepresentation();
+
         Archivos nuevo = new Archivos();
         nuevo.setProyecto(proyecto);
         nuevo.setArchivo(fileName);
         nuevo.setEstatus(1);
         nuevo.setTipo(1);
         nuevo.setDescripcion(fileName);
-        nuevo.setAutor(1);
+        nuevo.setAutor(0);
         nuevo.setFecha(fecha);
         nuevo.setExtension(file.getContentType());
         nuevo.setRuta(fileDownloadUri);
@@ -148,7 +154,7 @@ public class FileSystemREST {
         nuevo.setEstatus(1);
         nuevo.setTipo(1);
         nuevo.setDescripcion(fileName);
-        nuevo.setAutor(1);
+        nuevo.setAutor(0);
         nuevo.setFecha(fecha);
         nuevo.setExtension(file.getContentType());
         nuevo.setRuta(fileDownloadUri);
@@ -208,16 +214,16 @@ public class FileSystemREST {
 
     @PostMapping("/upload/proyecto/{cliente},{proyecto}")
     public Archivos uploadDocsProyecto(@RequestParam("file") MultipartFile file, @PathVariable("cliente") Integer cliente, @PathVariable("proyecto") Integer proyecto) {
-        
+
         String fileName = serviceFile.storeFileProyecto(file, cliente, proyecto);
         String rutaFs = env.getProperty("file.upload-dir") + cliente.toString() + "/" + proyecto.toString() + "/";
-        
+
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                                    .path("/filesystem/download/proyecto/")
-                                    .path(cliente.toString() + ",")
-                                    .path(proyecto.toString() + ",")
-                                    .path(fileName)
-                                    .toUriString();
+                .path("/filesystem/download/proyecto/")
+                .path(cliente.toString() + ",")
+                .path(proyecto.toString() + ",")
+                .path(fileName)
+                .toUriString();
         Date fecha = new Date();
         Archivos nuevo = new Archivos();
         nuevo.setProyecto(proyecto);
@@ -225,7 +231,7 @@ public class FileSystemREST {
         nuevo.setEstatus(1);
         nuevo.setTipo(1);
         nuevo.setDescripcion(fileName);
-        nuevo.setAutor(1);
+        nuevo.setAutor(0);
         nuevo.setFecha(fecha);
         nuevo.setExtension(file.getContentType());
         nuevo.setRuta(fileDownloadUri);
@@ -262,5 +268,14 @@ public class FileSystemREST {
                 .body(resource);
     }
 
-    
+    @GetMapping(path = "/user")
+    public KeycloakPrincipal getUserInfo() {
+
+        final KeycloakPrincipal user = (KeycloakPrincipal) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
+        
+        return user;
+    }
+
 }

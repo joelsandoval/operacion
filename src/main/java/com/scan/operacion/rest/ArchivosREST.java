@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import com.scan.operacion.dao.ArchivosActividadesRepository;
+import com.scan.operacion.services.FileSystemService;
 
 /**
  *
@@ -37,6 +38,9 @@ class ArchivosREST {
     
     @Autowired
     private ArchivosActividadesRepository repoActividades;
+    
+    @Autowired
+    private FileSystemService servFile;
     
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -82,4 +86,10 @@ class ArchivosREST {
         return repository.findById(resulta.getArchivo()).get();
     }
     
+    @PostMapping("/borra")
+    public void borraArchivo(@RequestBody Archivos archivo) {
+            String archi = archivo.getRutaFs() + archivo.getArchivo();
+            LOGGER.info(archi);
+            servFile.deleteFile(archi, archivo.getId(), archivo.getTipo());
+    }
 }

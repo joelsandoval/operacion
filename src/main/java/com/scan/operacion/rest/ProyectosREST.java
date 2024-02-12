@@ -1,22 +1,24 @@
 package com.scan.operacion.rest;
 
-import com.scan.operacion.dao.CatPersonasFisicasRepository;
 import com.scan.operacion.dao.ProyectosEquipoRepository;
 import com.scan.operacion.dao.ProyectosFlujoRepository;
 import com.scan.operacion.dao.ProyectosRepository;
 import com.scan.operacion.dao.ProyectosServiciosActividadesRepository;
 import com.scan.operacion.dao.ProyectosServiciosRepository;
+import com.scan.operacion.dao.SegUsuariosRepository;
+import com.scan.operacion.dao.view.VwActividadesRepository;
 import com.scan.operacion.dao.view.VwProyectosFlujoRepository;
 import com.scan.operacion.dao.view.VwProyectosRepository;
 import com.scan.operacion.dao.view.VwProyectosServiciosActividadesRepository;
 import com.scan.operacion.dao.view.VwProyectosServiciosRepository;
-import com.scan.operacion.model.CatPersonasFisicas;
 import com.scan.operacion.model.Proyectos;
 import com.scan.operacion.model.ProyectosEquipo;
 import com.scan.operacion.model.ProyectosFlujo;
 import com.scan.operacion.model.ProyectosServicios;
 import com.scan.operacion.model.ProyectosServiciosActividades;
 import com.scan.operacion.model.dto.ProyectosServiciosVencimiento;
+import com.scan.operacion.model.security.SegUsuarios;
+import com.scan.operacion.model.view.VwActividades;
 import com.scan.operacion.model.view.VwProyectos;
 import com.scan.operacion.model.view.VwProyectosFlujo;
 import com.scan.operacion.model.view.VwProyectosServicios;
@@ -75,10 +77,13 @@ class ProyectosREST {
 
     @Autowired
     private ProyectosEquipoRepository repoEquipos;
-    
+
     @Autowired
-    private CatPersonasFisicasRepository repoPersonas;
-    
+    private SegUsuariosRepository repoUsuarios;
+
+    @Autowired
+    private VwActividadesRepository repoVwActividadesP;
+
     /**
      * Guarda la resolución de un trámite, Inserta un registro en la tabla
      * BITACORA_RESOLUCION
@@ -90,10 +95,10 @@ class ProyectosREST {
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public Optional<VwProyectos> save(@RequestBody Proyectos proyecto) {
+    public VwProyectos save(@RequestBody Proyectos proyecto) {
         Proyectos nuevo = repoProyectos.save(proyecto);
         LOGGER.info("Se creó el proyecto: {} {}", nuevo.getProyecto(), nuevo.getId());
-        return repoVwProyectos.findById(nuevo.getId());
+        return repoVwProyectos.findById(nuevo.getId()).get();
     }
 
     /**
@@ -136,22 +141,22 @@ class ProyectosREST {
 
         List<ProyectosServiciosVencimiento> resultado = new ArrayList<>();
         List<VwProyectosServicios> servicios = repoVwServicios.dameServicios(proyecto);
-        for (VwProyectosServicios servicio: servicios) {
-                    Integer serv = servicio.getId();
-                    Optional<VwProyectosServiciosActividades> compromiso = repoVwActividades.dameProximoVencimiento(serv);
-                    ProyectosServiciosVencimiento servi = new ProyectosServiciosVencimiento();
-                    servi.setServicio(servicio);    
-                    if(compromiso.isPresent()) {
-                        servi.setCompromiso(compromiso.get());
-                    }
-                    resultado.add(servi);
-                }
+        for (VwProyectosServicios servicio : servicios) {
+            Integer serv = servicio.getId();
+            Optional<VwProyectosServiciosActividades> compromiso = repoVwActividades.dameProximoVencimiento(serv);
+            ProyectosServiciosVencimiento servi = new ProyectosServiciosVencimiento();
+            servi.setServicio(servicio);
+            if (compromiso.isPresent()) {
+                servi.setCompromiso(compromiso.get());
+            }
+            resultado.add(servi);
+        }
         return resultado;
     }
 
     @GetMapping(value = "/servicio/{servicio}")
-    public Optional<VwProyectosServicios> dameProyectoServicio(@PathVariable("servicio") Integer servicio) {
-        return repoVwServicios.findById(servicio);
+    public VwProyectosServicios dameProyectoServicio(@PathVariable("servicio") Integer servicio) {
+        return repoVwServicios.findById(servicio).get();
     }
 
     @PostMapping(value = "/actividades")
@@ -169,8 +174,8 @@ class ProyectosREST {
     }
 
     @GetMapping(value = "/actividad/{actividad}")
-    public Optional<VwProyectosServiciosActividades> dameProyectoServicioActividad(@PathVariable("actividad") Integer actividad) {
-        return repoVwActividades.findById(actividad);
+    public VwProyectosServiciosActividades dameProyectoServicioActividad(@PathVariable("actividad") Integer actividad) {
+        return repoVwActividades.findById(actividad).get();
     }
 
     @GetMapping(value = "/vencimiento/{servicio}")
@@ -198,22 +203,29 @@ class ProyectosREST {
     public List<VwProyectosFlujo> dameProyectoFlujo(@PathVariable("proyecto") Integer proyecto, @PathVariable("nivel") Integer nivel) {
         return repoVwFlujo.dameProyectoFlujo(proyecto, nivel);
     }
-    
+
     @PostMapping(value = "/equipo")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public CatPersonasFisicas save(@RequestBody ProyectosEquipo equipo) {
+    public SegUsuarios save(@RequestBody ProyectosEquipo equipo) {
         ProyectosEquipo nuevo = repoEquipos.save(equipo);
         LOGGER.info("Se creó el equipo: {} {}", nuevo.getProyecto(), nuevo.getPersona());
-        return repoPersonas.findById(nuevo.getPersona()).get();
+        return repoUsuarios.findById(nuevo.getPersona()).get();
     }
 
-    
     @GetMapping(value = "/equipo/{proyecto}")
-    public List<CatPersonasFisicas> dameProyectoEquipo(@PathVariable("proyecto") Integer proyecto) {
-        return repoPersonas.dameEquipoProyecto(proyecto);
+    public List<SegUsuarios> dameProyectoEquipo(@PathVariable("proyecto") Integer proyecto) {
+        return repoUsuarios.dameEquipoProyecto(proyecto);
     }
-    
-    
-    
+
+    @GetMapping(value = "/equipo/borra/{proyecto},{usuario}")
+    public void delEquipo(@PathVariable("proyecto") Integer proyecto, @PathVariable("usuario") Integer usuario) {
+        repoEquipos.borraEquipo(proyecto, usuario);
+    }
+
+    @GetMapping(value = "/actividades/pendientes/{usuario}")
+    public List<VwActividades> dameActividadesPendientes(@PathVariable("usuario") Integer usuario) {
+        return repoVwActividadesP.damePendientesUsuario(usuario);
+    }
+
 }

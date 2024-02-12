@@ -1,5 +1,7 @@
 package com.scan.operacion.rest;
 
+import com.scan.operacion.dao.SegUsuariosRepository;
+import com.scan.operacion.model.security.SegUsuarios;
 import com.scan.operacion.services.KeycloakService;
 import java.util.Collections;
 import java.util.Comparator;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
+import java.util.Optional;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +33,9 @@ class SeguridadREST {
 
     @Autowired
     private KeycloakService kcService;
+    
+    @Autowired
+    private SegUsuariosRepository repoU;
 
     /**
      * Guarda el usuario en la base de datos de KeyCloack
@@ -40,6 +46,7 @@ class SeguridadREST {
      */
     @PostMapping("/create-user")
     public UserRepresentation create(@RequestBody UserRepresentation user) {
+        
         return kcService.createUser(user);
     }
 
@@ -89,4 +96,14 @@ class SeguridadREST {
     }
     
     
+    @PostMapping("/usuario")
+    public SegUsuarios create(@RequestBody SegUsuarios user) {
+        
+        return repoU.save(user);
+    }
+    
+    @GetMapping(value = "/usuario/por-usuario/{usuario}")
+    public SegUsuarios dameUsuarioPorUsuario(@PathVariable("usuario") String usuario) {
+        return repoU.findByUsuario(usuario).get();
+    }
 }

@@ -2,9 +2,11 @@ package com.scan.operacion.rest;
 
 import com.scan.operacion.dao.CatPersonasFisicasRepository;
 import com.scan.operacion.dao.CatPersonasMoralesRepository;
+import com.scan.operacion.dao.SegUsuariosRepository;
 import com.scan.operacion.dao.view.VwFisicasUsuariosRepository;
 import com.scan.operacion.model.CatPersonasFisicas;
 import com.scan.operacion.model.CatPersonasMorales;
+import com.scan.operacion.model.security.SegUsuarios;
 import com.scan.operacion.model.view.VwFisicasUsuarios;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +40,10 @@ class PersonasREST {
     private CatPersonasFisicasRepository repoFisicas;
     @Autowired
     private VwFisicasUsuariosRepository repoFisicasF;
-
+    
+    @Autowired
+    private SegUsuariosRepository repoUsuarios;
+    
     /**
      * Guarda la resolución de un trámite, Inserta un registro en la tabla
      * BITACORA_RESOLUCION
@@ -74,7 +79,7 @@ class PersonasREST {
     }
     
     @GetMapping(value = "/todos")
-    public List<CatPersonasFisicas> dameTodos() {
-        return repoFisicas.dameTodos();
+    public List<SegUsuarios> dameTodos() {
+        return repoUsuarios.dameTodos();
     }
 }

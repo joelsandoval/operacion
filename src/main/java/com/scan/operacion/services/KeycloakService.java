@@ -1,7 +1,6 @@
 package com.scan.operacion.services;
 
 import com.scan.operacion.model.dto.ResponseMessage;
-import com.scan.operacion.model.security.User;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;

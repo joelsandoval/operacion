@@ -15,10 +15,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ArchivosRepository extends PagingAndSortingRepository<Archivos, Integer> {
 
-    Optional<Archivos> findById(Integer id);
 
     @Query(value = "select a.* from operacion.archivos a \n"
-            + "where a.proyecto = :proyecto order by a.archivo", nativeQuery = true)
+            + "left join operacion.archivos_actividades aa on aa.archivo = a.id \n"
+            + "where a.proyecto = :proyecto and aa.archivo is null order by a.archivo", nativeQuery = true)
     List<Archivos> dameArchivosProyecto(@Param("proyecto") Integer proyecto);
 
     @Query(value = "select a.* from operacion.archivos a \n"
